@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1044295039362",
+    "project_id": "shared-wallet-11087",
+    "storage_bucket": "shared-wallet-11087.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044295039362:android:7ef0dc9cd5ffdb8f69b79b",
+        "android_client_info": {
+          "package_name": "com.example.sharedwallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1k2WAHHIYPQNWusgb8y1mzYEQjiuS7GY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
