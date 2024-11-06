@@ -1,4 +1,4 @@
-package com.example.sharedwallet.ui.slideshow
+package com.example.sharedwallet.ui.friends
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.sharedwallet.databinding.FragmentFriendsBinding
+import com.google.android.material.snackbar.Snackbar
 
 class FriendsFragment : Fragment() {
 
@@ -32,6 +33,12 @@ class FriendsFragment : Fragment() {
         friendsViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        binding.fab.setOnClickListener { view ->
+            Snackbar.make(view, "Friends action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
+
         return root
     }
 

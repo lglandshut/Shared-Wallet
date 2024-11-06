@@ -13,14 +13,12 @@ import com.google.android.material.textfield.TextInputLayout
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var authManager: AuthManager
+    private val authManager = AuthManager
     private var checkedBox: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        authManager = AuthManager()
 
         val emailInputLayout = findViewById<TextInputLayout>(R.id.emailInputLayout)
         val passwordInputLayout = findViewById<TextInputLayout>(R.id.passwordInputLayout)

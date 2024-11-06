@@ -6,36 +6,34 @@ import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import com.example.sharedwallet.databinding.ActivityMainBinding
 import com.example.sharedwallet.firebase.AuthManager
 import com.example.sharedwallet.firebase.DatabaseManager
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var authManager: AuthManager
-    private lateinit var databaseManager: DatabaseManager
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var navController: NavController
     private lateinit var headerView: View
+    private val databaseManager = DatabaseManager
+    private val authManager = AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initViews()
-        initFirebase()
         initListeners()
         loadData()
     }
@@ -77,12 +75,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initListeners() {
 
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
-        }
-
         headerView.findViewById<ImageView>(R.id.imageView_logout).setOnClickListener { _ ->
             authManager.signOut()
             //Back to LoginActivity
@@ -90,12 +82,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish() // Schließt MainActivity
         }
-    }
-
-    private fun initFirebase() {
-        // Initialize Firebase Auth
-        authManager = AuthManager()
-        databaseManager = DatabaseManager()
     }
 
     private fun loadData() {

@@ -8,10 +8,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
-class AuthManager {
+object AuthManager {
 
     private val auth: FirebaseAuth = Firebase.auth
-    private val databaseManager = DatabaseManager()
+    private val databaseManager = DatabaseManager
 
     fun createUserWithEmail(email: String, password: String, username: String, activity: LoginActivity, onComplete: (Boolean) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password)

@@ -1,14 +1,17 @@
 package com.example.sharedwallet.firebase
 
 import android.util.Log
+import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import java.util.UUID
 
-class DatabaseManager {
+object DatabaseManager {
 
     private val db = FirebaseFirestore.getInstance()
+    private val authManager = AuthManager
 
     fun createUser(userId: String, username: String, email: String) {
         val user = UserDO(userId, email, username, null,
@@ -34,7 +37,6 @@ class DatabaseManager {
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Fehler beim Abfragen des Benutzers $userId", e)
-                callback(null)
             }
     }
 
@@ -48,6 +50,41 @@ class DatabaseManager {
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Fehler beim Löschen des Benutzers", e)
+            }
+    }
+
+    fun createGroup(name: String, description: String) {
+
+        val userId = authManager.getCurrentUserId()
+        val groupId = UUID.randomUUID().toString()
+        val group = GroupDO(groupId, name, description, arrayListOf(userId))
+
+        db.collection("groups")
+            .document(groupId)
+            .set(group)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Gruppe $groupId erfolgreich erstellt")
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Fehler beim Erstellen der Gruppe $groupId", e)
+            }
+    }
+
+    fun getGroups(callback: (ArrayList<GroupDO>) -> Unit) {
+        val userId = authManager.getCurrentUserId()
+        db.collection("groups")
+            .whereArrayContains("members", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                val list = arrayListOf<GroupDO>()
+                for (document in documents) {
+                    val group = document.toObject<GroupDO>()
+                    list.add(group)
+                }
+                callback(list)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
             }
     }
 }

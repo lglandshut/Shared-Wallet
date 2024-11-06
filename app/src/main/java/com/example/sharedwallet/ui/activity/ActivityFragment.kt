@@ -1,4 +1,4 @@
-package com.example.sharedwallet.ui.home
+package com.example.sharedwallet.ui.activity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.sharedwallet.databinding.FragmentGroupBinding
+import com.example.sharedwallet.databinding.FragmentActivityBinding
 
-class GroupFragment : Fragment() {
+class ActivityFragment : Fragment() {
 
-    private var _binding: FragmentGroupBinding? = null
+    private var _binding: FragmentActivityBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class GroupFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val groupViewModel =
-            ViewModelProvider(this).get(GroupViewModel::class.java)
+        val activityViewModel =
+            ViewModelProvider(this).get(ActivityViewModel::class.java)
 
-        _binding = FragmentGroupBinding.inflate(inflater, container, false)
+        _binding = FragmentActivityBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textGroup
-        groupViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textActivity
+        activityViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

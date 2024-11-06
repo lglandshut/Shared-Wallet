@@ -14,4 +14,5 @@
     <string name="login">Login</string>
     <string name="create_account">Create Account</string>
     <string name="string_logout">Logout</string>
+    <string name="user_not_found">User not found</string>
 </resources>

@@ -9,12 +9,11 @@ import com.example.sharedwallet.firebase.AuthManager
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var authManager: AuthManager
+    private val authManager = AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        authManager = AuthManager()
         if (authManager.isUserLoggedIn()) {
             // Benutzer ist eingeloggt, zeige MainActivity
             startActivity(Intent(this, MainActivity::class.java))
