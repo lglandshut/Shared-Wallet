@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.example.sharedwallet.firebase.AuthManager
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -14,9 +14,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val firebaseAuth = FirebaseAuth.getInstance()
-        authManager = AuthManager(firebaseAuth)
-
+        authManager = AuthManager()
         if (authManager.isUserLoggedIn()) {
             // Benutzer ist eingeloggt, zeige MainActivity
             startActivity(Intent(this, MainActivity::class.java))

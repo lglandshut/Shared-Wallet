@@ -64,6 +64,20 @@
         android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- TextInput für Username -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/usernameInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"/>
+</com.google.android.material.textfield.TextInputLayout>
+
     <!-- Anmelden/Registrieren Button -->
     <Button
         android:id="@+id/authButton"

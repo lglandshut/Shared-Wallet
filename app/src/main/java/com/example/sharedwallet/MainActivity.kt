@@ -17,16 +17,15 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import com.example.sharedwallet.databinding.ActivityMainBinding
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
+import com.example.sharedwallet.firebase.AuthManager
+import com.example.sharedwallet.firebase.DatabaseManager
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var auth: FirebaseAuth
     private lateinit var authManager: AuthManager
+    private lateinit var databaseManager: DatabaseManager
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var navController: NavController
@@ -95,12 +94,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFirebase() {
         // Initialize Firebase Auth
-        auth = Firebase.auth
-        authManager = AuthManager(auth)
+        authManager = AuthManager()
+        databaseManager = DatabaseManager()
     }
 
     private fun loadData() {
         val textEmail = headerView.findViewById<TextView>(R.id.textEmail)
-        textEmail.text = auth.currentUser?.email ?: "Email not found!"
+        val textUsername = headerView.findViewById<TextView>(R.id.text_username)
+        if (authManager.isUserLoggedIn()) {
+            databaseManager.getUser(authManager.getCurrentUserId()) { user ->
+                if (user != null) {
+                    textEmail.text = user.email
+                    textUsername.text = user.username
+                } else {
+                    textEmail.text = getString(R.string.user_not_found)
+                    textUsername.text = getString(R.string.user_not_found)
+                }
+            }
+
+        }
     }
+
 }

@@ -8,8 +8,8 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.sharedwallet.firebase.AuthManager
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,11 +20,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val firebaseAuth = FirebaseAuth.getInstance()
-        authManager = AuthManager(firebaseAuth)
+        authManager = AuthManager()
 
         val emailInputLayout = findViewById<TextInputLayout>(R.id.emailInputLayout)
         val passwordInputLayout = findViewById<TextInputLayout>(R.id.passwordInputLayout)
+        val usernameInputLayout = findViewById<TextInputLayout>(R.id.usernameInputLayout)
         val authButton = findViewById<Button>(R.id.authButton)
 
         // Listener für RadioGroup
@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
                 R.id.radioRegister -> {
                     emailInputLayout.visibility = View.VISIBLE
                     passwordInputLayout.visibility = View.VISIBLE
+                    usernameInputLayout.visibility = View.VISIBLE
                     authButton.text = getString(R.string.create_account)
                     checkedBox = 2
                 }
@@ -50,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
         authButton.setOnClickListener {
             val email = findViewById<EditText>(R.id.emailEditText).text.toString()
             val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
+            val username = findViewById<EditText>(R.id.usernameEditText).text.toString()
 
             if (checkedBox == 1) {
                 authManager.signInWithEmail(email, password) { success, exception ->
@@ -60,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                authManager.createUserWithEmail(email, password, this) { success ->
+                authManager.createUserWithEmail(email, password, username, this) { success ->
                     if (success) startMainActivity()
                 }
 
