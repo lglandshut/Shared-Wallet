@@ -8,7 +8,7 @@ import com.example.sharedwallet.firebase.objects.GroupDO
 
 class GroupViewModel : ViewModel() {
 
-    val databaseManager = DatabaseManager
+    private val databaseManager = DatabaseManager
 
     private val _groups = MutableLiveData<List<GroupDO>>()
     val groups: LiveData<List<GroupDO>> = _groups

@@ -29,7 +29,7 @@ class GroupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val groupViewModel =
-            ViewModelProvider(this).get(GroupViewModel::class.java)
+            ViewModelProvider(this)[GroupViewModel::class.java]
 
         _binding = FragmentGroupBinding.inflate(inflater, container, false)
         val root: View = binding.root

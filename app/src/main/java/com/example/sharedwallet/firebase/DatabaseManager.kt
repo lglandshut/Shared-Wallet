@@ -13,8 +13,9 @@ object DatabaseManager {
     private val db = FirebaseFirestore.getInstance()
     private val authManager = AuthManager
 
+
     fun createUser(userId: String, username: String, email: String) {
-        val user = UserDO(userId, email, username, null,
+        val user = UserDO(userId, email, username, null, null,
             FieldValue.serverTimestamp())
 
         db.collection("user")
@@ -40,7 +41,6 @@ object DatabaseManager {
             }
     }
 
-
     fun removeUser(userId: String) {
         db.collection("user")
             .document(userId) // Die userId des Benutzers
@@ -51,6 +51,29 @@ object DatabaseManager {
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Fehler beim Löschen des Benutzers", e)
             }
+    }
+
+    fun addFriend(userId: String) {
+        val currentUser = authManager.getCurrentUserId()
+        db.collection("user")
+            .document(currentUser)
+            .update("friends", FieldValue.arrayUnion(userId))
+    }
+
+    fun getFriends(callback: (ArrayList<UserDO>) -> Unit) {
+        getUser(authManager.getCurrentUserId()) {
+            if (it != null) {
+                val list = arrayListOf<UserDO>()
+                it.friends?.forEach { friend ->
+                    getUser(friend) {
+                        if (it != null) {
+                            list.add(it)
+                        }
+                    }
+                }
+                callback(list)
+            }
+        }
     }
 
     fun createGroup(name: String, description: String) {
@@ -85,6 +108,38 @@ object DatabaseManager {
             }
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents: ", exception)
+            }
+    }
+
+    fun getUserByEmail(username: String, callback: (UserDO?) -> Unit) {
+        db.collection("user")
+            .whereEqualTo("email", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    callback(null)
+                } else {
+                    callback(documents.first().toObject<UserDO>())
+                }
+            }
+            .addOnFailureListener {
+                callback(null)
+            }
+    }
+
+    fun getUserByUsername(username: String, callback: (UserDO?) -> Unit) {
+        db.collection("user")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    callback(null)
+                } else {
+                    callback(documents.first().toObject<UserDO>())
+                }
+            }
+            .addOnFailureListener{
+                callback(null)
             }
     }
 }
