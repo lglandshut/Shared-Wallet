@@ -61,20 +61,31 @@ object DatabaseManager {
     }
 
     fun getFriends(callback: (ArrayList<UserDO>) -> Unit) {
-        getUser(authManager.getCurrentUserId()) {
-            if (it != null) {
+        getUser(authManager.getCurrentUserId()) { currentUser ->
+            if (currentUser != null && !currentUser.friends.isNullOrEmpty()) {
                 val list = arrayListOf<UserDO>()
-                it.friends?.forEach { friend ->
-                    getUser(friend) {
-                        if (it != null) {
-                            list.add(it)
+                val friends = currentUser.friends
+                var loadedCount = 0
+
+                // Iteriere über die Freundesliste und hole die Daten der einzelnen Freunde
+                friends.forEach { friendId ->
+                    getUser(friendId) { friend ->
+                        friend?.let { list.add(it) }
+                        loadedCount++
+
+                        // Prüfe, ob alle Freunde geladen sind, bevor der Callback aufgerufen wird
+                        if (loadedCount == friends.size) {
+                            callback(list)
                         }
                     }
                 }
-                callback(list)
+            } else {
+                // Falls keine Freunde vorhanden sind, rufe den Callback mit einer leeren Liste auf
+                callback(arrayListOf())
             }
         }
     }
+
 
     fun createGroup(name: String, description: String) {
 
@@ -108,6 +119,20 @@ object DatabaseManager {
             }
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents: ", exception)
+            }
+    }
+
+    fun getGroupById(groupId: String, callback: (GroupDO) -> Unit) {
+        val docRef = db.collection("groups").document(groupId)
+        docRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                val group = documentSnapshot.toObject<GroupDO>()
+                if (group != null) {
+                    callback(group)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Fehler beim Abfragen der Gruppe $groupId", e)
             }
     }
 

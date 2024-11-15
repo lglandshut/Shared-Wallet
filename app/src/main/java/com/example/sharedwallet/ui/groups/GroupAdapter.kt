@@ -1,10 +1,12 @@
 package com.example.sharedwallet.ui.groups
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sharedwallet.ui.groupdetail.GroupDetailActivity
 import com.example.sharedwallet.R
 import com.example.sharedwallet.firebase.objects.GroupDO
 
@@ -24,6 +26,14 @@ class GroupAdapter(private val groups: List<GroupDO>) : RecyclerView.Adapter<Gro
         val group = groups[position]
         holder.groupName.text = group.name
         holder.groupDescription.text = group.description
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, GroupDetailActivity::class.java).apply {
+                // Übergib die Gruppendetails an die neue Activity
+                putExtra("GROUP_ID", group.groupId)
+            }
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = groups.size
