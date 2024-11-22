@@ -1,8 +1,11 @@
 package com.example.sharedwallet.firebase
 
+import android.annotation.SuppressLint
 import android.util.Log
+import com.example.sharedwallet.firebase.objects.ExpenseDO
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
+import com.example.sharedwallet.ui.groupdetail.UserDebt
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -10,13 +13,13 @@ import java.util.UUID
 
 object DatabaseManager {
 
+    @SuppressLint("StaticFieldLeak")
     private val db = FirebaseFirestore.getInstance()
     private val authManager = AuthManager
 
 
     fun createUser(userId: String, username: String, email: String) {
-        val user = UserDO(userId, email, username, null, null,
-            FieldValue.serverTimestamp())
+        val user = UserDO(userId, email, username, null, FieldValue.serverTimestamp())
 
         db.collection("user")
             .document(userId)
@@ -167,4 +170,26 @@ object DatabaseManager {
                 callback(null)
             }
     }
+
+    fun addExpenseToGroup(groupId: String, expense: ExpenseDO) {
+        db.collection("groups")
+            .document(groupId)
+            .collection("expenses")
+            .document(expense.expenseId ?: UUID.randomUUID().toString())
+            .set(expense)
+    }
+
+    fun getUserDebtsByGroupId(groupId: String, callback: (List<UserDebt>) -> Unit) {
+        db.collection("groups")
+            .document(groupId)
+            .collection("expenses")
+            .get()
+    }
+
+    fun addUsersToGroup(groupId: String, userIds: List<String?>) {
+        db.collection("groups")
+            .document(groupId)
+            .update("members", FieldValue.arrayUnion(*userIds.toTypedArray()))
+    }
+
 }

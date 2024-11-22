@@ -10,7 +10,7 @@
 
     <!-- Titel der Gruppe -->
     <TextView
-        android:id="@+id/friend_name"
+        android:id="@+id/group_detail_friend_debt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Friend Username"
@@ -21,7 +21,7 @@
 
     <!-- Beschreibung der Gruppe -->
     <TextView
-        android:id="@+id/friend_email"
+        android:id="@+id/group_detail_friend_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Friend E-Mail"

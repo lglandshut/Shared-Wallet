@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="speeddial_add_friend" type="id"/>
+    <item name="speeddial_add_expense" type="id"/>
+    <item name="speeddial_settle_expense" type="id"/>
+</resources>

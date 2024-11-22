@@ -14,19 +14,25 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@android:color/white" />
 
     <!-- Oberer Bereich für Gesamtschulden -->
     <LinearLayout
         android:id="@+id/totalDebtContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:background="?attr/colorPrimary"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="?attr/colorPrimary"
-        android:gravity="center">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/white" />
 
         <TextView
             android:id="@+id/totalDebtLabel"
@@ -35,7 +41,7 @@
             android:text="Total Debt"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/totalDebtAmount"
@@ -44,27 +50,40 @@
             android:text="$0.00"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/white" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewExpensesPerUser"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewFriends"
+        android:id="@+id/recyclerViewExpenses"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/totalDebtContainer"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/totalDebtContainer" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+    <com.leinardi.android.speeddial.SpeedDialView
         android:id="@+id/fabGroupDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/create_group"
-        app:srcCompat="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:sdMainFabClosedBackgroundColor="?attr/colorPrimary"
+        app:sdMainFabClosedSrc="@android:drawable/ic_input_add">
+    </com.leinardi.android.speeddial.SpeedDialView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

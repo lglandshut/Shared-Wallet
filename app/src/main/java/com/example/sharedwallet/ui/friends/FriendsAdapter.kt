@@ -11,8 +11,8 @@ import com.example.sharedwallet.firebase.objects.UserDO
 class FriendsAdapter(private val friends: List<UserDO>) : RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder>() {
 
     inner class FriendsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val friendUsername: TextView = itemView.findViewById(R.id.friend_name)
-        val friendEmail: TextView = itemView.findViewById(R.id.friend_email)
+        val friendUsername: TextView = itemView.findViewById(R.id.group_detail_friend_debt)
+        val friendEmail: TextView = itemView.findViewById(R.id.group_detail_friend_username)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsViewHolder {
