@@ -192,4 +192,10 @@ object DatabaseManager {
             .update("members", FieldValue.arrayUnion(*userIds.toTypedArray()))
     }
 
+    fun removeUserFromGroup(groupId: String) {
+        db.collection("groups")
+            .document(groupId)
+            .update("members", FieldValue.arrayRemove(authManager.getCurrentUserId()))
+    }
+
 }

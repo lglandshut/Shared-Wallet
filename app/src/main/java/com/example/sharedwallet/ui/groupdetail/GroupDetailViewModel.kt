@@ -46,8 +46,18 @@ class GroupDetailViewModel : ViewModel() {
         val groupId = group.value?.groupId
         if (groupId != null) {
             databaseManager.addUsersToGroup(groupId, selectedUserIds)
+            group.value?.members?.plus(selectedUserIds)
         }
 
+    }
+
+    fun leaveGroup() {
+        val groupId = group.value?.groupId
+        if (groupId != null) {
+            databaseManager.removeUserFromGroup(groupId)
+        }
+        TODO("Check if group is empty and delete if so" +
+                "Check if expenses are settled")
     }
 
 }

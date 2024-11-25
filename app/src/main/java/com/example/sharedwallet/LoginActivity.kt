@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
                 R.id.radioLogin -> {
                     emailInputLayout.visibility = View.VISIBLE
                     passwordInputLayout.visibility = View.VISIBLE
+                    usernameInputLayout.visibility = View.GONE
                     authButton.text = getString(R.string.login)
                     checkedBox = 1
                 }

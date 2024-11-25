@@ -5,12 +5,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.example.sharedwallet.R
 import com.example.sharedwallet.databinding.ActivityGroupDetailBinding
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
+
 
 class GroupDetailActivity : AppCompatActivity() {
 
@@ -50,6 +52,11 @@ class GroupDetailActivity : AppCompatActivity() {
             println(friendsToAdd)
         }
 
+        val leaveGroupButton = binding.imageViewLeaveGroup
+        leaveGroupButton.setOnClickListener {
+            showLeaveGroupDialog()
+        }
+
         // Speed Dial FAB
         val speedDialView = binding.fabGroupDetail
         speedDialView.addActionItem(
@@ -63,7 +70,10 @@ class GroupDetailActivity : AppCompatActivity() {
                 .create()
         )
         speedDialView.addActionItem(
-            SpeedDialActionItem.Builder(R.id.speeddial_settle_expense, R.drawable.ic_balance_wallet_24)
+            SpeedDialActionItem.Builder(
+                R.id.speeddial_settle_expense,
+                R.drawable.ic_balance_wallet_24
+            )
                 .setLabel("Settle Expense")
                 .create()
         )
@@ -76,11 +86,13 @@ class GroupDetailActivity : AppCompatActivity() {
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
+
                 R.id.speeddial_add_expense -> {
-                    Toast.makeText(this, "Add expense", Toast.LENGTH_SHORT).show()
+                    openAddExpenseFragment()
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
+
                 R.id.speeddial_settle_expense -> {
                     Toast.makeText(this, "Settle expense", Toast.LENGTH_SHORT).show()
                     speedDialView.close() // To close the Speed Dial with animation
@@ -92,13 +104,9 @@ class GroupDetailActivity : AppCompatActivity() {
     }
 
     fun showAddFriendsToGroupDialog(friends: List<UserDO>) {
-        // Erstelle eine Liste mit den Namen der Freunde
-        val friendsInGroup = viewModel.group.value?.members ?: emptyList()
-        val filteredFriends = friends.filterNot { friendsInGroup.contains(it.userId) }
-        val friendNames = filteredFriends.map { it.username }.toTypedArray()
-
+        val friendNames = friends.map { it.username }.toTypedArray()
         // Array für die ausgewählten Elemente
-        val selectedFriends = BooleanArray(filteredFriends.size) { false }
+        val selectedFriends = BooleanArray(friendNames.size) { false }
 
         // Dialog erstellen
         val dialogBuilder = AlertDialog.Builder(this)
@@ -108,7 +116,7 @@ class GroupDetailActivity : AppCompatActivity() {
         }
         dialogBuilder.setPositiveButton("Add") { _, _ ->
             // Ausgewählte Freunde zur Gruppe hinzufügen
-            val selectedUserIds = filteredFriends
+            val selectedUserIds = friends
                 .filterIndexed { index, _ -> selectedFriends[index] }
                 .map { it.userId }
             viewModel.addFriendsToGroup(selectedUserIds)
@@ -117,6 +125,32 @@ class GroupDetailActivity : AppCompatActivity() {
 
         // Dialog anzeigen
         dialogBuilder.create().show()
+    }
+
+    fun showLeaveGroupDialog() {
+        // Dialog erstellen
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle("Leave Group?")
+
+        dialogBuilder.setPositiveButton("Yes") { _, _ ->
+            viewModel.leaveGroup()
+            finish()
+        }
+        dialogBuilder.setNegativeButton("No", null)
+
+        // Dialog anzeigen
+        dialogBuilder.create().show()
+    }
+
+    private fun openAddExpenseFragment() {
+        // Neues Fragment erstellen
+        val fragment = AddExpenseFragment()
+
+        // FragmentTransaction starten
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment) // Container für das Fragment
+        transaction.addToBackStack(null) // Zurück-Button unterstützt
+        transaction.commit()
     }
 
 

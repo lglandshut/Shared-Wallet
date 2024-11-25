@@ -4,9 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/selectableItemBackground"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:layout_marginBottom="8dp">
+    android:background="@drawable/group_item_background"
+    android:layout_marginBottom="8dp">>
 
     <!-- Titel der Gruppe -->
     <TextView

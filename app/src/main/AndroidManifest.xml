@@ -15,7 +15,7 @@
         <activity
             android:name=".ui.groupdetail.GroupDetailActivity"
             android:exported="true"
-            android:theme="@style/Theme.SharedWallet" />
+            android:theme="@style/Theme.SharedWallet.NoActionBar" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"
