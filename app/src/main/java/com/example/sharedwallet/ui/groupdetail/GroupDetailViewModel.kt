@@ -32,23 +32,27 @@ class GroupDetailViewModel : ViewModel() {
         }
     }
 
-    fun loadFriendsList(callback: (List<UserDO>) -> Unit) {
+    fun loadFriendsList() {
         databaseManager.getFriends { friends ->
             val currentMembers = group.value?.members ?: emptyList()
-            val friendsToAdd = friends.filterNot { friend ->
+            val filteredFriends = friends.filterNot { friend ->
                 currentMembers.contains(friend.userId)
             }
-            callback(friendsToAdd)
+            _friendsToAdd.value = filteredFriends
         }
     }
 
     fun addFriendsToGroup(selectedUserIds: List<String?>) {
         val groupId = group.value?.groupId
         if (groupId != null) {
-            databaseManager.addUsersToGroup(groupId, selectedUserIds)
-            group.value?.members?.plus(selectedUserIds)
+            databaseManager.addUsersToGroup(groupId, selectedUserIds) {
+                // Erfolgreich hinzugefügt, Mitglieder und Freunde aktualisieren
+                group.value?.let { currentGroup ->
+                    val updatedMembers = currentGroup.members?.plus(selectedUserIds.filterNotNull())
+                    _group.value = currentGroup.copy(members = updatedMembers)
+                }
+            }
         }
-
     }
 
     fun leaveGroup() {

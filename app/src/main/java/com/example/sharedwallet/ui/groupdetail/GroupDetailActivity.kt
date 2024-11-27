@@ -47,9 +47,8 @@ class GroupDetailActivity : AppCompatActivity() {
             recyclerViewAdapter.updateData(debts)
         }
 
-        viewModel.friendsToAdd.observe(this) { friendsToAdd ->
-            // Aktualisiere die UI mit den gefilterten Freunden
-            println(friendsToAdd)
+        viewModel.friendsToAdd.observe(this) { friends ->
+            showAddFriendsToGroupDialog(friends)
         }
 
         val leaveGroupButton = binding.imageViewLeaveGroup
@@ -80,9 +79,7 @@ class GroupDetailActivity : AppCompatActivity() {
         speedDialView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.speeddial_add_friend -> {
-                    viewModel.loadFriendsList { filteredFriends ->
-                        showAddFriendsToGroupDialog(filteredFriends)
-                    }
+                    viewModel.loadFriendsList()
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
@@ -152,7 +149,6 @@ class GroupDetailActivity : AppCompatActivity() {
         transaction.addToBackStack(null) // Zurück-Button unterstützt
         transaction.commit()
     }
-
 
     private fun updateUI(group: GroupDO) {
         supportActionBar?.title = group.name

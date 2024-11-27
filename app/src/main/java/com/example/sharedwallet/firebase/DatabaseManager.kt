@@ -192,6 +192,19 @@ object DatabaseManager {
             .update("members", FieldValue.arrayUnion(*userIds.toTypedArray()))
     }
 
+    fun addUsersToGroup(groupId: String, userIds: List<String?>, onComplete: () -> Unit) {
+        db.collection("groups")
+            .document(groupId)
+            .update("members", FieldValue.arrayUnion(*userIds.toTypedArray()))
+            .addOnSuccessListener {
+                onComplete() // Callback aufrufen
+            }
+            .addOnFailureListener { e ->
+                Log.e("DatabaseManager", "Fehler beim Hinzufügen der Nutzer: ", e)
+            }
+    }
+
+
     fun removeUserFromGroup(groupId: String) {
         db.collection("groups")
             .document(groupId)
