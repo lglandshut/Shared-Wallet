@@ -15,15 +15,30 @@ class GroupDetailViewModel : ViewModel() {
     private val _group = MutableLiveData<GroupDO>()
     val group: LiveData<GroupDO> = _group
 
+    private val _expenses = MutableLiveData<List<ExpenseDO>>()
+    val expenses: LiveData<List<ExpenseDO>> = _expenses
+
     private val _userDebts = MutableLiveData<List<UserDebt>>()
     val userDebts: LiveData<List<UserDebt>> = _userDebts
 
     private val _friendsToAdd = MutableLiveData<List<UserDO>>()
     val friendsToAdd: LiveData<List<UserDO>> = _friendsToAdd
 
+    var userIdToUserNameMap: Map<String, String> = emptyMap()
+
     fun loadGroup(groupId: String) {
         databaseManager.getGroupById(groupId) { result ->
             _group.value = result
+            //Map userIds to usernames
+            if(!result.members.isNullOrEmpty()) {
+                databaseManager.getUsersByUserId(result.members!!) { users ->
+                    userIdToUserNameMap = users
+                    //Add expenses to recyclerview
+                    if(!result.expenses.isNullOrEmpty()) {
+                        _expenses.value = result.expenses!!
+                    }
+                }
+            }
         }
     }
 
@@ -73,7 +88,10 @@ class GroupDetailViewModel : ViewModel() {
     fun addExpense(expenses: List<ExpenseDO>) {
         val groupId = group.value?.groupId
         if (groupId != null && expenses.isNotEmpty()) {
-            databaseManager.addExpense(groupId, expenses)
+            databaseManager.addExpense(groupId, expenses) {
+                // Erfolgreich hinzugefügt
+                loadGroup(groupId)
+            }
         }
     }
 

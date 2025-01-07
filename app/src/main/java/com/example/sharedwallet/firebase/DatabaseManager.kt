@@ -42,6 +42,26 @@ object DatabaseManager {
             }
     }
 
+    fun getUsersByUserId(userIds: List<String>, callback: (Map<String, String>) -> Unit) {
+        val docRef = db.collection("user").whereIn("userId", userIds)
+        docRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                val userMap = mutableMapOf<String, String>()
+                for (document in querySnapshot.documents) {
+                    val userId = document.getString("userId")
+                    val username = document.getString("username")
+                    if (userId != null && username != null) {
+                        userMap[userId] = username
+                    }
+                }
+                callback(userMap)
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error getting users by userIds", e)
+                callback(emptyMap()) // Return empty map on failure
+            }
+    }
+
     fun removeUser(userId: String) {
         db.collection("user")
             .document(userId) // Die userId des Benutzers
@@ -191,7 +211,7 @@ object DatabaseManager {
             .update("members", FieldValue.arrayRemove(authManager.getCurrentUserId()))
     }
 
-    fun addExpense(groupId: String, expenses: List<ExpenseDO>) {
+    fun addExpense(groupId: String, expenses: List<ExpenseDO>, onComplete: () -> Unit) {
         val groupDocRef = db.collection("groups").document(groupId)
 
         val updatedExpenses = expenses.map { expense ->
@@ -205,6 +225,7 @@ object DatabaseManager {
         groupDocRef.update("expenses", FieldValue.arrayUnion(*updatedExpenses.toTypedArray()))
             .addOnSuccessListener {
                 Log.d("Firestore", "Expenses added to existing list using arrayUnion")
+                onComplete()
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding expenses to existing list using arrayUnion", e)

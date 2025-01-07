@@ -17,7 +17,8 @@ class GroupDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGroupDetailBinding
     private val viewModel: GroupDetailViewModel by viewModels()
-    private lateinit var recyclerViewAdapter: GroupDetailUserAdapter
+    private lateinit var groupDetailUserAdapter: GroupDetailUserAdapter
+    private lateinit var groupExpensesAdapter: GroupDetailExpenseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,18 +34,23 @@ class GroupDetailActivity : AppCompatActivity() {
         supportActionBar?.title = groupId
 
         // RecyclerView konfigurieren
-        recyclerViewAdapter = GroupDetailUserAdapter(emptyList())
-        binding.recyclerViewExpensesPerUser.adapter = recyclerViewAdapter
+        groupExpensesAdapter = GroupDetailExpenseAdapter(emptyList())
+        binding.recyclerViewExpenses.adapter = groupExpensesAdapter
+        groupDetailUserAdapter = GroupDetailUserAdapter(emptyList())
+        binding.recyclerViewExpensesPerUser.adapter = groupDetailUserAdapter
 
         // Lade Daten
         viewModel.loadGroup(groupId)
         viewModel.group.observe(this) { group ->
             updateUI(group)
         }
+        viewModel.expenses.observe(this) { expenses ->
+            groupExpensesAdapter.updateData(expenses, viewModel.userIdToUserNameMap)
+        }
 
         viewModel.loadUserDebts(groupId)
         viewModel.userDebts.observe(this) { debts ->
-            recyclerViewAdapter.updateData(debts)
+            groupDetailUserAdapter.updateData(debts)
         }
 
         viewModel.loadFriendsList()
