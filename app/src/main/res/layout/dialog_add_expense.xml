@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Grund -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reason"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/expense_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter the Reason here"
+            android:inputType="text"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Auswahl der Verteilungsart -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Split Options"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/distribution_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/distribution_equal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Evenly" />
+
+            <RadioButton
+                android:id="@+id/distribution_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Percentage" />
+
+            <RadioButton
+                android:id="@+id/distribution_custom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Individually" />
+        </RadioGroup>
+
+        <!-- Betrag -->
+        <TextView
+            android:id="@+id/expense_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Amount"
+            android:textSize="16sp"/>
+        <EditText
+            android:id="@+id/expense_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter the Amount in € here"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_expense_split_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/button_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Abbrechen"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/button_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hinzufügen" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -3,16 +3,23 @@ package com.example.sharedwallet.ui.groupdetail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
+import com.google.android.material.textfield.TextInputEditText
 
-class GroupDetailUserAdapter(private var userDebtList: List<UserDebt>) :
-    RecyclerView.Adapter<GroupDetailUserAdapter.ViewHolder>() {
+data class UserDebt(
+    val userName: String? = null,
+    val userDebt: Double? = 0.0
+)
+
+class UserDeptSplitAdapter(private var userDebtList: List<UserDebt>) :
+    RecyclerView.Adapter<UserDeptSplitAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val userName: TextView = itemView.findViewById(R.id.group_detail_friend_username)
-        val userDebt: TextView = itemView.findViewById(R.id.group_detail_friend_debt)
+        val userName: TextView = itemView.findViewById(R.id.expense_username)
+        val userDebt: EditText = itemView.findViewById(R.id.expense_amount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,15 +31,8 @@ class GroupDetailUserAdapter(private var userDebtList: List<UserDebt>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val userDebt = userDebtList[position]
         holder.userName.text = userDebt.userName
-        holder.userDebt.text = "${String.format("%.2f", userDebt.userDebt)} €"
     }
 
     override fun getItemCount() = userDebtList.size
-
-    // Aktualisiere Daten und informiere RecyclerView
-    fun updateData(newList: List<UserDebt>) {
-        userDebtList = newList
-        notifyDataSetChanged()
-    }
 }
 

@@ -5,7 +5,6 @@ import android.util.Log
 import com.example.sharedwallet.firebase.objects.ExpenseDO
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
-import com.example.sharedwallet.ui.groupdetail.UserDebt
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -16,7 +15,6 @@ object DatabaseManager {
     @SuppressLint("StaticFieldLeak")
     private val db = FirebaseFirestore.getInstance()
     private val authManager = AuthManager
-
 
     fun createUser(userId: String, username: String, email: String) {
         val user = UserDO(userId, email, username, null, FieldValue.serverTimestamp())
@@ -89,11 +87,8 @@ object DatabaseManager {
         }
     }
 
-
-    fun createGroup(name: String, description: String) {
-
+    fun createGroup(name: String, description: String, groupId: String) {
         val userId = authManager.getCurrentUserId()
-        val groupId = UUID.randomUUID().toString()
         val group = GroupDO(groupId, name, description, arrayListOf(userId))
 
         db.collection("groups")
@@ -171,25 +166,11 @@ object DatabaseManager {
             }
     }
 
-    fun addExpenseToGroup(groupId: String, expense: ExpenseDO) {
-        db.collection("groups")
-            .document(groupId)
-            .collection("expenses")
-            .document(expense.expenseId ?: UUID.randomUUID().toString())
-            .set(expense)
-    }
-
-    fun getUserDebtsByGroupId(groupId: String, callback: (List<UserDebt>) -> Unit) {
+    fun getUserDebtsByGroupId(groupId: String, callback: (List<ExpenseDO>) -> Unit) {
         db.collection("groups")
             .document(groupId)
             .collection("expenses")
             .get()
-    }
-
-    fun addUsersToGroup(groupId: String, userIds: List<String?>) {
-        db.collection("groups")
-            .document(groupId)
-            .update("members", FieldValue.arrayUnion(*userIds.toTypedArray()))
     }
 
     fun addUsersToGroup(groupId: String, userIds: List<String?>, onComplete: () -> Unit) {
@@ -197,18 +178,58 @@ object DatabaseManager {
             .document(groupId)
             .update("members", FieldValue.arrayUnion(*userIds.toTypedArray()))
             .addOnSuccessListener {
-                onComplete() // Callback aufrufen
+                onComplete()
             }
             .addOnFailureListener { e ->
                 Log.e("DatabaseManager", "Fehler beim Hinzufügen der Nutzer: ", e)
             }
     }
 
-
     fun removeUserFromGroup(groupId: String) {
         db.collection("groups")
             .document(groupId)
             .update("members", FieldValue.arrayRemove(authManager.getCurrentUserId()))
+    }
+
+    fun addExpense(groupId: String, expenses: List<ExpenseDO>) {
+        val groupDocRef = db.collection("groups").document(groupId)
+
+        val updatedExpenses = expenses.map { expense ->
+            expense.apply {
+                this.expenseId = UUID.randomUUID().toString()
+                this.paidBy = authManager.getCurrentUserId()
+                this.paidFor = this.paidBy
+            }
+        }
+
+        groupDocRef.update("expenses", FieldValue.arrayUnion(*updatedExpenses.toTypedArray()))
+            .addOnSuccessListener {
+                Log.d("Firestore", "Expenses added to existing list using arrayUnion")
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error adding expenses to existing list using arrayUnion", e)
+            }
+    }
+
+    fun getExpensesByPaidByUserId(groupId: String, userId: String, callback: (List<ExpenseDO>) -> Unit) {
+        val groupDocRef = db.collection("groups").document(groupId)
+
+        groupDocRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                val group = documentSnapshot.toObject(GroupDO::class.java)
+                if (group != null) {
+                    val expenses = group.expenses ?: emptyList()
+                    val filteredExpenses = expenses.filter { it.paidBy == userId }
+                    callback(filteredExpenses)
+                } else {
+                    Log.w("Firestore", "Group document not found: $groupId")
+                    callback(emptyList()) // Return empty list if group not found
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error fetching group document: $groupId", e)
+                callback(emptyList()) // Return empty list on failure
+            }
     }
 
 }

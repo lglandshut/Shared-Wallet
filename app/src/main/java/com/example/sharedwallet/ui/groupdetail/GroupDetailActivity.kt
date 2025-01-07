@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
 import com.example.sharedwallet.R
 import com.example.sharedwallet.databinding.ActivityGroupDetailBinding
 import com.example.sharedwallet.firebase.objects.GroupDO
@@ -43,13 +42,12 @@ class GroupDetailActivity : AppCompatActivity() {
             updateUI(group)
         }
 
+        viewModel.loadUserDebts(groupId)
         viewModel.userDebts.observe(this) { debts ->
             recyclerViewAdapter.updateData(debts)
         }
 
-        viewModel.friendsToAdd.observe(this) { friends ->
-            showAddFriendsToGroupDialog(friends)
-        }
+        viewModel.loadFriendsList()
 
         val leaveGroupButton = binding.imageViewLeaveGroup
         leaveGroupButton.setOnClickListener {
@@ -80,12 +78,13 @@ class GroupDetailActivity : AppCompatActivity() {
             when (actionItem.id) {
                 R.id.speeddial_add_friend -> {
                     viewModel.loadFriendsList()
+                    showAddFriendsToGroupDialog(viewModel.friendsToAdd.value!!)
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
 
                 R.id.speeddial_add_expense -> {
-                    openAddExpenseFragment()
+                    viewModel.friendsToAdd.value?.let { openAddExpenseDialog(it) }
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
@@ -100,7 +99,7 @@ class GroupDetailActivity : AppCompatActivity() {
         })
     }
 
-    fun showAddFriendsToGroupDialog(friends: List<UserDO>) {
+    private fun showAddFriendsToGroupDialog(friends: List<UserDO>) {
         val friendNames = friends.map { it.username }.toTypedArray()
         // Array für die ausgewählten Elemente
         val selectedFriends = BooleanArray(friendNames.size) { false }
@@ -124,7 +123,7 @@ class GroupDetailActivity : AppCompatActivity() {
         dialogBuilder.create().show()
     }
 
-    fun showLeaveGroupDialog() {
+    private fun showLeaveGroupDialog() {
         // Dialog erstellen
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setTitle("Leave Group?")
@@ -139,15 +138,9 @@ class GroupDetailActivity : AppCompatActivity() {
         dialogBuilder.create().show()
     }
 
-    private fun openAddExpenseFragment() {
-        // Neues Fragment erstellen
-        val fragment = AddExpenseFragment()
-
-        // FragmentTransaction starten
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment) // Container für das Fragment
-        transaction.addToBackStack(null) // Zurück-Button unterstützt
-        transaction.commit()
+    private fun openAddExpenseDialog(userList: List<UserDO>) {
+        val dialog = AddExpenseDialogFragment(userList)
+        dialog.show(supportFragmentManager, "addExpenseDialog")
     }
 
     private fun updateUI(group: GroupDO) {

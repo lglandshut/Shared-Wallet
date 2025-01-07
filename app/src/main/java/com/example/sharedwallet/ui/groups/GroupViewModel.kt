@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sharedwallet.firebase.DatabaseManager
 import com.example.sharedwallet.firebase.objects.GroupDO
+import java.util.UUID
 
 class GroupViewModel : ViewModel() {
 
@@ -20,10 +21,13 @@ class GroupViewModel : ViewModel() {
     }
 
     fun addGroup(group: GroupDO) {
+        val groupId = UUID.randomUUID().toString() // Generate unique groupId
+        val newGroup = group.copy(groupId = groupId) // Set groupId to the GroupDO object
+
         val newGroups = _groups.value.orEmpty().toMutableList()
-        newGroups.add(group)
+        newGroups.add(newGroup)
         _groups.value = newGroups
 
-        databaseManager.createGroup(group.name.toString(), group.description.toString())
+        databaseManager.createGroup(newGroup.name.toString(), newGroup.description.toString(), groupId) // Pass groupId to databaseManager
     }
 }

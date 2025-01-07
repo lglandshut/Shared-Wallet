@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sharedwallet.firebase.DatabaseManager
+import com.example.sharedwallet.firebase.objects.ExpenseDO
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
 
@@ -26,9 +27,14 @@ class GroupDetailViewModel : ViewModel() {
         }
     }
 
-    private fun loadUserDebts(groupId: String) {
+    fun loadUserDebts(groupId: String) {
         databaseManager.getUserDebtsByGroupId(groupId) { debts ->
-            _userDebts.value = debts
+            var userDebts: List<UserDebt> = ArrayList()
+            debts.forEach { debt ->
+                userDebts.plus(UserDebt())
+                // TODO: Add logic to summarize depts per user
+            }
+            //_userDebts.value = debts
         }
     }
 
@@ -62,6 +68,13 @@ class GroupDetailViewModel : ViewModel() {
         }
         TODO("Check if group is empty and delete if so" +
                 "Check if expenses are settled")
+    }
+
+    fun addExpense(expenses: List<ExpenseDO>) {
+        val groupId = group.value?.groupId
+        if (groupId != null && expenses.isNotEmpty()) {
+            databaseManager.addExpense(groupId, expenses)
+        }
     }
 
 }
