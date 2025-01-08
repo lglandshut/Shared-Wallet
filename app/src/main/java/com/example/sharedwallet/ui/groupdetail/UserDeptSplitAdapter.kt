@@ -1,5 +1,8 @@
 package com.example.sharedwallet.ui.groupdetail
 
+import android.annotation.SuppressLint
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +17,10 @@ data class UserDebt(
     val userDebt: Double? = null
 )
 
-class UserDeptSplitAdapter(private var userDebtList: List<UserDebt>,
-                           private val userIdToUserNameMap: Map<String, String>) :
-    RecyclerView.Adapter<UserDeptSplitAdapter.ViewHolder>() {
+class UserDeptSplitAdapter(
+    private var userDebtList: MutableList<UserDebt>, // Mutable, um Änderungen zu speichern
+    private val userIdToUserNameMap: Map<String, String>
+) : RecyclerView.Adapter<UserDeptSplitAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userName: TextView = itemView.findViewById(R.id.expense_username)
@@ -29,12 +33,28 @@ class UserDeptSplitAdapter(private var userDebtList: List<UserDebt>,
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val userDebt = userDebtList[position]
         holder.userName.text = userIdToUserNameMap[userDebt.userName] ?: userDebt.userName
         holder.userDebt.setText(userDebt.userDebt?.toString() ?: "")
+
+        // Überwache Änderungen im EditText
+        holder.userDebt.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                userDebtList[position] = userDebt.copy(
+                    userDebt = s?.toString()?.toDoubleOrNull() ?: 0.0
+                )
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     override fun getItemCount() = userDebtList.size
+
+    // Zugriff auf die aktuelle Liste
+    fun getUserDebtList(): List<UserDebt> = userDebtList
 }
+
 

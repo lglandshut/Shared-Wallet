@@ -10,11 +10,9 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
 import com.example.sharedwallet.firebase.objects.ExpenseDO
-import com.example.sharedwallet.firebase.objects.UserDO
 
 class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragment() {
 
@@ -42,7 +40,7 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
         recyclerView.visibility = View.GONE
 
         // RecyclerView konfigurieren
-        recyclerViewAdapter = UserDeptSplitAdapter(userList.map { UserDebt(it) }.toList(), viewModel.userIdToUserNameMap)
+        recyclerViewAdapter = UserDeptSplitAdapter(userList.map { UserDebt(it) }.toMutableList(), viewModel.userIdToUserNameMap)
         recyclerView.adapter = recyclerViewAdapter
 
         val cancelButton = view.findViewById<Button>(R.id.button_cancel)
@@ -54,6 +52,7 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
         addButton.setOnClickListener {
             when (distributionTypeRadioGroup.checkedRadioButtonId) {
                 R.id.distribution_equal -> {
+                    // Gleichteilte Verteilung der Schulden
                     val expenseAmountPerUser = expenseAmount.text.toString().toDouble()/ (userList.size + 1)
                     val expenseList = mutableListOf<ExpenseDO>()
                     userList.forEach {
@@ -65,8 +64,14 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
                 }
 
                 R.id.distribution_custom -> {
-                    val expenseList = mutableListOf<ExpenseDO>()
-
+                    // Individuelle Verteilung der Schulden
+                    val userDebtList = recyclerViewAdapter.getUserDebtList() // Liste aus Adapter abrufen
+                    val expenseList = userDebtList.map { userDebt ->
+                        ExpenseDO(null, null,userDebt.userName ?: "",
+                            userDebt.userDebt ?: 0.0, expenseReason.text.toString()
+                        )
+                    }
+                    viewModel.addExpense(expenseList)
                 }
             }
             dismiss() // Close the dialog
