@@ -11,10 +11,11 @@ import com.google.android.material.textfield.TextInputEditText
 
 data class UserDebt(
     val userName: String? = null,
-    val userDebt: Double? = 0.0
+    val userDebt: Double? = null
 )
 
-class UserDeptSplitAdapter(private var userDebtList: List<UserDebt>) :
+class UserDeptSplitAdapter(private var userDebtList: List<UserDebt>,
+                           private val userIdToUserNameMap: Map<String, String>) :
     RecyclerView.Adapter<UserDeptSplitAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,13 +25,14 @@ class UserDeptSplitAdapter(private var userDebtList: List<UserDebt>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.friend_dept_row_item, parent, false)
+            .inflate(R.layout.user_dept_split_row_item, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val userDebt = userDebtList[position]
-        holder.userName.text = userDebt.userName
+        holder.userName.text = userIdToUserNameMap[userDebt.userName] ?: userDebt.userName
+        holder.userDebt.setText(userDebt.userDebt?.toString() ?: "")
     }
 
     override fun getItemCount() = userDebtList.size

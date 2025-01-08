@@ -68,9 +68,8 @@ class GroupDetailViewModel : ViewModel() {
         if (groupId != null) {
             databaseManager.addUsersToGroup(groupId, selectedUserIds) {
                 // Erfolgreich hinzugefügt, Mitglieder und Freunde aktualisieren
-                group.value?.let { currentGroup ->
-                    val updatedMembers = currentGroup.members?.plus(selectedUserIds.filterNotNull())
-                    _group.value = currentGroup.copy(members = updatedMembers)
+                group.value?.let {
+                    loadGroup(groupId)
                 }
             }
         }

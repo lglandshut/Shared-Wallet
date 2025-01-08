@@ -218,7 +218,6 @@ object DatabaseManager {
             expense.apply {
                 this.expenseId = UUID.randomUUID().toString()
                 this.paidBy = authManager.getCurrentUserId()
-                this.paidFor = this.paidBy
             }
         }
 

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sharedwallet.R
 import com.example.sharedwallet.databinding.ActivityGroupDetailBinding
+import com.example.sharedwallet.firebase.AuthManager
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -19,6 +20,7 @@ class GroupDetailActivity : AppCompatActivity() {
     private val viewModel: GroupDetailViewModel by viewModels()
     private lateinit var groupDetailUserAdapter: GroupDetailUserAdapter
     private lateinit var groupExpensesAdapter: GroupDetailExpenseAdapter
+    private val authManager = AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +92,10 @@ class GroupDetailActivity : AppCompatActivity() {
                 }
 
                 R.id.speeddial_add_expense -> {
-                    viewModel.friendsToAdd.value?.let { openAddExpenseDialog(it) }
+                    viewModel.group.value?.members?.let { member ->
+                        openAddExpenseDialog(member.filterNot {
+                        it == authManager.getCurrentUserId()
+                    }) }
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
@@ -144,7 +149,7 @@ class GroupDetailActivity : AppCompatActivity() {
         dialogBuilder.create().show()
     }
 
-    private fun openAddExpenseDialog(userList: List<UserDO>) {
+    private fun openAddExpenseDialog(userList: List<String>) {
         val dialog = AddExpenseDialogFragment(userList)
         dialog.show(supportFragmentManager, "addExpenseDialog")
     }
