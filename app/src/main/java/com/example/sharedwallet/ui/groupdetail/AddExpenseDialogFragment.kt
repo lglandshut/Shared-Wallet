@@ -65,7 +65,9 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
 
                 R.id.distribution_custom -> {
                     // Individuelle Verteilung der Schulden
-                    val userDebtList = recyclerViewAdapter.getUserDebtList() // Liste aus Adapter abrufen
+                    // Liste aus Adapter abrufen und Leere Beträge filtern
+                    val userDebtList = recyclerViewAdapter.getUserDebtList().filterNot {
+                        it.userDebt == 0.0 || it.userDebt == null }
                     val expenseList = userDebtList.map { userDebt ->
                         ExpenseDO(null, null,userDebt.userName ?: "",
                             userDebt.userDebt ?: 0.0, expenseReason.text.toString()

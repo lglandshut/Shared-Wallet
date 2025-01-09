@@ -3,6 +3,7 @@ package com.example.sharedwallet.ui.groupdetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.sharedwallet.firebase.AuthManager
 import com.example.sharedwallet.firebase.DatabaseManager
 import com.example.sharedwallet.firebase.objects.ExpenseDO
 import com.example.sharedwallet.firebase.objects.GroupDO
@@ -11,6 +12,8 @@ import com.example.sharedwallet.firebase.objects.UserDO
 class GroupDetailViewModel : ViewModel() {
 
     private val databaseManager = DatabaseManager
+    private val authManager = AuthManager
+    val currentUser = authManager.getCurrentUserId()
 
     private val _group = MutableLiveData<GroupDO>()
     val group: LiveData<GroupDO> = _group
@@ -31,27 +34,48 @@ class GroupDetailViewModel : ViewModel() {
             _group.value = result
             //Map userIds to usernames
             if(!result.members.isNullOrEmpty()) {
-                databaseManager.getUsersByUserId(result.members!!) { users ->
+                databaseManager.getUsersByUserId(result.members) { users ->
                     userIdToUserNameMap = users
                     //Add expenses to recyclerview
                     if(!result.expenses.isNullOrEmpty()) {
-                        _expenses.value = result.expenses!!
+                        _expenses.value = result.expenses.map { it.copy() }
+                        //Calculate debts per user
+                        calculateDebtsPerUser()
                     }
                 }
             }
         }
     }
 
-    fun loadUserDebts(groupId: String) {
-        databaseManager.getUserDebtsByGroupId(groupId) { debts ->
-            var userDebts: List<UserDebt> = ArrayList()
-            debts.forEach { debt ->
-                userDebts.plus(UserDebt())
-                // TODO: Add logic to summarize depts per user
+    private fun calculateDebtsPerUser() {
+        _group.value?.expenses?.let { expenses ->
+            val debtsMap = mutableMapOf<String, Double>() // Map für UserID -> Gesamtschuld
+
+            for (expense in expenses) {
+                //Wenn der currentUser bezahlt hat
+                if (expense.paidBy == currentUser) {
+                    val amount = expense.debtAmount ?: 0.0
+                    val paidFor = expense.paidFor ?: continue
+                    debtsMap[paidFor] = (debtsMap[paidFor] ?: 0.0) + amount
+                }
+
+                //Wenn der currentUser Nutznießer der Zahlung war
+                if (expense.paidFor == currentUser) {
+                    val amount = expense.debtAmount ?: 0.0
+                    val paidBy = expense.paidBy ?: continue
+                    debtsMap[paidBy] = (debtsMap[paidBy] ?: 0.0) - amount
+                }
             }
-            //_userDebts.value = debts
+
+            //Erstelle eine Liste von UserDebt-Objekten aus der Map
+            val userDebts = debtsMap.map { (userId, debt) ->
+                UserDebt(userId, debt)
+            }.filter { it.userDebt != 0.0 } //Filtere irrelevante (Schulden = 0)
+
+            _userDebts.value = userDebts
         }
     }
+
 
     fun loadFriendsList() {
         databaseManager.getFriends { friends ->

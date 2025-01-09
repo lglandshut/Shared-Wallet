@@ -25,12 +25,23 @@ class GroupDetailUserAdapter(private var userDebtList: List<UserDebt>) :
         val userDebt = userDebtList[position]
         holder.userName.text = userDebt.userName
         holder.userDebt.text = "${String.format("%.2f", userDebt.userDebt)} €"
+
+        // Setze die Farbe basierend auf dem Wert
+        val textColor = if ((userDebt.userDebt ?: 0.0) < 0) {
+            android.graphics.Color.RED
+        } else {
+            android.graphics.Color.GREEN
+        }
+        holder.userDebt.setTextColor(textColor)
     }
 
     override fun getItemCount() = userDebtList.size
 
     // Aktualisiere Daten und informiere RecyclerView
-    fun updateData(newList: List<UserDebt>) {
+    fun updateData(newList: List<UserDebt>, userIdToUserNameMap: Map<String, String>) {
+        newList.forEach { expense ->
+            expense.userName = userIdToUserNameMap[expense.userName] ?: expense.userName
+        }
         userDebtList = newList
         notifyDataSetChanged()
     }

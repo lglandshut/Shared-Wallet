@@ -186,13 +186,6 @@ object DatabaseManager {
             }
     }
 
-    fun getUserDebtsByGroupId(groupId: String, callback: (List<ExpenseDO>) -> Unit) {
-        db.collection("groups")
-            .document(groupId)
-            .collection("expenses")
-            .get()
-    }
-
     fun addUsersToGroup(groupId: String, userIds: List<String?>, onComplete: () -> Unit) {
         db.collection("groups")
             .document(groupId)
@@ -228,27 +221,6 @@ object DatabaseManager {
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding expenses to existing list using arrayUnion", e)
-            }
-    }
-
-    fun getExpensesByPaidByUserId(groupId: String, userId: String, callback: (List<ExpenseDO>) -> Unit) {
-        val groupDocRef = db.collection("groups").document(groupId)
-
-        groupDocRef.get()
-            .addOnSuccessListener { documentSnapshot ->
-                val group = documentSnapshot.toObject(GroupDO::class.java)
-                if (group != null) {
-                    val expenses = group.expenses ?: emptyList()
-                    val filteredExpenses = expenses.filter { it.paidBy == userId }
-                    callback(filteredExpenses)
-                } else {
-                    Log.w("Firestore", "Group document not found: $groupId")
-                    callback(emptyList()) // Return empty list if group not found
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.w("Firestore", "Error fetching group document: $groupId", e)
-                callback(emptyList()) // Return empty list on failure
             }
     }
 

@@ -10,10 +10,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
-import com.google.android.material.textfield.TextInputEditText
 
 data class UserDebt(
-    val userName: String? = null,
+    var userName: String? = null,
     val userDebt: Double? = null
 )
 

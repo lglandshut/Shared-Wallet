@@ -1,19 +1,5 @@
 package com.example.sharedwallet.firebase.objects
 
-/*
-groups
-    groupId: String
-    name: String
-    description: String
-    members: List<String>
-        userId: String
-    expenses: List<ExpenseDO>
-        expenseId: String
-        paidBy: String
-        paidFor: String
-        debtAmount: Double
- */
-
 data class GroupDO(
     val groupId: String? = null,
     val name: String? = null,

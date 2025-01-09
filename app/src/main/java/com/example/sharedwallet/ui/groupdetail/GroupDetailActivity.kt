@@ -1,5 +1,6 @@
 package com.example.sharedwallet.ui.groupdetail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -8,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.sharedwallet.R
 import com.example.sharedwallet.databinding.ActivityGroupDetailBinding
 import com.example.sharedwallet.firebase.AuthManager
-import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
@@ -21,6 +21,7 @@ class GroupDetailActivity : AppCompatActivity() {
     private lateinit var groupDetailUserAdapter: GroupDetailUserAdapter
     private lateinit var groupExpensesAdapter: GroupDetailExpenseAdapter
     private val authManager = AuthManager
+    val currentUser = authManager.getCurrentUserId()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,15 +45,20 @@ class GroupDetailActivity : AppCompatActivity() {
         // Lade Daten
         viewModel.loadGroup(groupId)
         viewModel.group.observe(this) { group ->
-            updateUI(group)
+            supportActionBar?.title = group.name
         }
         viewModel.expenses.observe(this) { expenses ->
             groupExpensesAdapter.updateData(expenses, viewModel.userIdToUserNameMap)
         }
 
-        viewModel.loadUserDebts(groupId)
         viewModel.userDebts.observe(this) { debts ->
-            groupDetailUserAdapter.updateData(debts)
+            groupDetailUserAdapter.updateData(debts, viewModel.userIdToUserNameMap)
+
+            //Update Total Debts
+            val totalDebt = debts.sumOf { it.userDebt ?: 0.0 }
+            binding.totalDebtAmount.text = "%.2f €".format(totalDebt)
+            if (totalDebt < 0.0) binding.totalDebtAmount.setTextColor(Color.RED)
+            else binding.totalDebtAmount.setTextColor(Color.GREEN)
         }
 
         viewModel.loadFriendsList()
@@ -93,9 +99,7 @@ class GroupDetailActivity : AppCompatActivity() {
 
                 R.id.speeddial_add_expense -> {
                     viewModel.group.value?.members?.let { member ->
-                        openAddExpenseDialog(member.filterNot {
-                        it == authManager.getCurrentUserId()
-                    }) }
+                        openAddExpenseDialog(member.filterNot { it == currentUser }) }
                     speedDialView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
@@ -154,9 +158,4 @@ class GroupDetailActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, "addExpenseDialog")
     }
 
-    private fun updateUI(group: GroupDO) {
-        supportActionBar?.title = group.name
-        // Weitere UI-Elemente können hier ebenfalls aktualisiert werden
-        // binding.totalDebtAmount.text = group.totalDebt.toString()  // Beispielwert, je nach Attributen im GroupDO
-    }
 }
