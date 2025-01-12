@@ -26,6 +26,19 @@
         android:contentDescription="@string/string_logout"
         app:srcCompat="@drawable/ic_logout_white" />
 
+        <ImageView
+            android:id="@+id/imageView_refresh"
+            android:scaleType="center"
+            android:scaleX="1.6"
+            android:scaleY="1.6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:adjustViewBounds="true"
+            android:paddingEnd="20dp"
+            android:contentDescription="@string/string_refresh"
+            app:srcCompat="@drawable/ic_refresh" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Oberer Bereich für Gesamtschulden -->
@@ -49,7 +62,7 @@
             android:id="@+id/totalDebtLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Debt"
+            android:text="@string/total_debt"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -58,7 +71,7 @@
             android:id="@+id/totalDebtAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00 €"
+            android:text="@string/default_debt_amount"
             android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold" />

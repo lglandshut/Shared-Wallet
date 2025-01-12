@@ -1,26 +1,24 @@
-package com.example.sharedwallet.ui.groupdetail
+package com.example.sharedwallet.ui.activity
 
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
 import com.example.sharedwallet.firebase.objects.ExpenseDO
 
-class GroupDetailExpenseAdapter(private var expenseList: List<ExpenseDO>, private var currentUser: String) :
-    RecyclerView.Adapter<GroupDetailExpenseAdapter.ViewHolder>() {
+class ActivityFragmentAdapter(private var expenseList: List<ExpenseDO>, private var currentUser: String) :
+    RecyclerView.Adapter<ActivityFragmentAdapter.ViewHolder>() {
 
-        private var userIdToUserNameMap: Map<String, String> = emptyMap()
+    private var userIdToUserNameMap: Map<String, String> = emptyMap()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val paidBy: TextView = itemView.findViewById(R.id.paidBy)
         val paidFor: TextView = itemView.findViewById(R.id.paidFor)
         val amount: TextView = itemView.findViewById(R.id.amount)
         val reason: TextView = itemView.findViewById(R.id.reason)
-        val icon: ImageView = itemView.findViewById(R.id.expense_row_icon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,10 +33,7 @@ class GroupDetailExpenseAdapter(private var expenseList: List<ExpenseDO>, privat
         holder.paidFor.text = expense.paidFor
         holder.amount.text = "${String.format("%.2f", expense.debtAmount)} €"
         holder.reason.text = expense.debtReason
-        if (expense.paidBy != userIdToUserNameMap[currentUser]) {
-            holder.amount.setTextColor(Color.RED)
-            holder.icon.setImageResource(R.drawable.baseline_credit_card_off_24)
-        }
+        if (expense.paidBy != userIdToUserNameMap[currentUser]) holder.amount.setTextColor(Color.RED)
     }
 
     override fun getItemCount() = expenseList.size

@@ -12,10 +12,11 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/person_a_icon"
+            android:id="@+id/expense_row_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/baseline_add_card_24"
+            android:contentDescription="@string/expense_icon"
             android:layout_marginEnd="8dp"/>
 
         <LinearLayout
@@ -28,7 +29,7 @@
                 android:id="@+id/paidBy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Person A"
+                android:text="@string/person_a"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
@@ -36,7 +37,7 @@
                 android:id="@+id/paidFor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Person B"
+                android:text="@string/person_b"
                 android:textSize="14sp"
                 android:textColor="@color/gray"/>
         </LinearLayout>
@@ -45,7 +46,7 @@
             android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="50 €"
+            android:text="@string/default_debt_amount"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/design_default_color_secondary_variant"
@@ -57,7 +58,7 @@
         android:id="@+id/reason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Grund: Abendessen"
+        android:text="@string/reason"
         android:textSize="14sp"
         android:textColor="@color/black"
         android:layout_marginTop="4dp"/>

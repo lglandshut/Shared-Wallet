@@ -3,11 +3,14 @@ package com.example.sharedwallet
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,7 +20,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.sharedwallet.databinding.ActivityMainBinding
 import com.example.sharedwallet.firebase.AuthManager
 import com.example.sharedwallet.firebase.DatabaseManager
+import com.example.sharedwallet.ui.groups.GroupFragment
+import com.example.sharedwallet.ui.groups.GroupViewModel
 import com.google.android.material.navigation.NavigationView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,6 +53,30 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_refresh) {
+            refreshGroups() // Method to refresh groups
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun refreshGroups() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+                as? androidx.navigation.fragment.NavHostFragment
+        val currentFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment
+
+        if (currentFragment is GroupFragment) {
+            val groupViewModel = ViewModelProvider(currentFragment)[GroupViewModel::class.java]
+            groupViewModel.loadGroups()
+        } else {
+            Toast.makeText(this, "No GroupFragment active to refresh", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)

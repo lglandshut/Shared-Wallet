@@ -8,12 +8,13 @@ import com.example.sharedwallet.firebase.DatabaseManager
 import com.example.sharedwallet.firebase.objects.ExpenseDO
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
+import com.example.sharedwallet.firebase.objects.UserDebt
 
 class GroupDetailViewModel : ViewModel() {
 
     private val databaseManager = DatabaseManager
     private val authManager = AuthManager
-    val currentUser = authManager.getCurrentUserId()
+    private val currentUser = authManager.getCurrentUserId()
 
     private val _group = MutableLiveData<GroupDO>()
     val group: LiveData<GroupDO> = _group
@@ -52,14 +53,14 @@ class GroupDetailViewModel : ViewModel() {
             val debtsMap = mutableMapOf<String, Double>() // Map für UserID -> Gesamtschuld
 
             for (expense in expenses) {
-                //Wenn der currentUser bezahlt hat
+                //If currentUser paid
                 if (expense.paidBy == currentUser) {
                     val amount = expense.debtAmount ?: 0.0
                     val paidFor = expense.paidFor ?: continue
                     debtsMap[paidFor] = (debtsMap[paidFor] ?: 0.0) + amount
                 }
 
-                //Wenn der currentUser Nutznießer der Zahlung war
+                //If paid for currentUser
                 if (expense.paidFor == currentUser) {
                     val amount = expense.debtAmount ?: 0.0
                     val paidBy = expense.paidBy ?: continue
@@ -67,10 +68,10 @@ class GroupDetailViewModel : ViewModel() {
                 }
             }
 
-            //Erstelle eine Liste von UserDebt-Objekten aus der Map
+            //Create List of UserDebt-objects with debt values from map
             val userDebts = debtsMap.map { (userId, debt) ->
                 UserDebt(userId, debt)
-            }.filter { it.userDebt != 0.0 } //Filtere irrelevante (Schulden = 0)
+            }.filter { it.userDebt != 0.0 } //filter irrelevant debts (debts = 0)
 
             _userDebts.value = userDebts
         }
@@ -91,7 +92,6 @@ class GroupDetailViewModel : ViewModel() {
         val groupId = group.value?.groupId
         if (groupId != null) {
             databaseManager.addUsersToGroup(groupId, selectedUserIds) {
-                // Erfolgreich hinzugefügt, Mitglieder und Freunde aktualisieren
                 group.value?.let {
                     loadGroup(groupId)
                 }
@@ -99,20 +99,26 @@ class GroupDetailViewModel : ViewModel() {
         }
     }
 
-    fun leaveGroup() {
+    fun leaveGroup() : Boolean {
         val groupId = group.value?.groupId
+        val debts = userDebts.value
+        if (!debts.isNullOrEmpty()) {
+            val totalDebt = debts.sumOf { it.userDebt ?: 0.0 }
+            if (totalDebt < 0.0) {
+                return false
+            }
+        }
         if (groupId != null) {
             databaseManager.removeUserFromGroup(groupId)
+            return true
         }
-        TODO("Check if group is empty and delete if so" +
-                "Check if expenses are settled")
+        return false
     }
 
     fun addExpense(expenses: List<ExpenseDO>) {
         val groupId = group.value?.groupId
         if (groupId != null && expenses.isNotEmpty()) {
             databaseManager.addExpense(groupId, expenses) {
-                // Erfolgreich hinzugefügt
                 loadGroup(groupId)
             }
         }

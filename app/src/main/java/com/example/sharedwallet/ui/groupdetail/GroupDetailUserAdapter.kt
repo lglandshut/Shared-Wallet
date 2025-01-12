@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
+import com.example.sharedwallet.firebase.objects.UserDebt
 
 class GroupDetailUserAdapter(private var userDebtList: List<UserDebt>) :
     RecyclerView.Adapter<GroupDetailUserAdapter.ViewHolder>() {
@@ -26,7 +27,7 @@ class GroupDetailUserAdapter(private var userDebtList: List<UserDebt>) :
         holder.userName.text = userDebt.userName
         holder.userDebt.text = "${String.format("%.2f", userDebt.userDebt)} €"
 
-        // Setze die Farbe basierend auf dem Wert
+        //Set color based of debt
         val textColor = if ((userDebt.userDebt ?: 0.0) < 0) {
             android.graphics.Color.RED
         } else {
@@ -37,7 +38,7 @@ class GroupDetailUserAdapter(private var userDebtList: List<UserDebt>) :
 
     override fun getItemCount() = userDebtList.size
 
-    // Aktualisiere Daten und informiere RecyclerView
+    //Refresh data and tell RecyclerView
     fun updateData(newList: List<UserDebt>, userIdToUserNameMap: Map<String, String>) {
         newList.forEach { expense ->
             expense.userName = userIdToUserNameMap[expense.userName] ?: expense.userName

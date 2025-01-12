@@ -10,11 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
-
-data class UserDebt(
-    var userName: String? = null,
-    val userDebt: Double? = null
-)
+import com.example.sharedwallet.firebase.objects.UserDebt
 
 class UserDeptSplitAdapter(
     private var userDebtList: MutableList<UserDebt>, // Mutable, um Änderungen zu speichern

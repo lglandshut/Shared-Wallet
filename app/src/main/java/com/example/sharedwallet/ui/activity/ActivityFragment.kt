@@ -4,35 +4,48 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.sharedwallet.databinding.FragmentActivityBinding
+import com.example.sharedwallet.firebase.AuthManager
 
 class ActivityFragment : Fragment() {
 
     private var _binding: FragmentActivityBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var activityFragmentAdapter: ActivityFragmentAdapter
+    private val authManager = AuthManager
+    private val currentUser = authManager.getCurrentUserId()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val activityViewModel =
+        val viewModel =
             ViewModelProvider(this).get(ActivityViewModel::class.java)
 
         _binding = FragmentActivityBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textActivity
-        activityViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        // RecyclerView konfigurieren
+        activityFragmentAdapter = ActivityFragmentAdapter(emptyList(), currentUser)
+        binding.recyclerViewActivities.adapter = activityFragmentAdapter
+
+        viewModel.loadData()
+        viewModel.expenses.observe(viewLifecycleOwner) { expenses ->
+            activityFragmentAdapter.updateData(expenses, viewModel.userIdToUserNameMap)
         }
+
+
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val viewModel =
+            ViewModelProvider(this).get(ActivityViewModel::class.java)
+        viewModel.loadData()
     }
 
     override fun onDestroyView() {

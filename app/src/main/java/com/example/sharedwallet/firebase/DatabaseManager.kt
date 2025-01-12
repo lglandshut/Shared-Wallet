@@ -42,6 +42,22 @@ object DatabaseManager {
             }
     }
 
+    fun getAllUsers(callback: (Map<String, String>) -> Unit) {
+        db.collection("user")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val userMap = mutableMapOf<String, String>()
+                for (document in querySnapshot.documents) {
+                    val userId = document.getString("userId")
+                    val username = document.getString("username")
+                    if (userId != null && username != null) {
+                        userMap[userId] = username
+                    }
+                }
+                callback(userMap)
+            }
+    }
+
     fun getUsersByUserId(userIds: List<String>, callback: (Map<String, String>) -> Unit) {
         val docRef = db.collection("user").whereIn("userId", userIds)
         docRef.get()
@@ -62,30 +78,18 @@ object DatabaseManager {
             }
     }
 
-    fun removeUser(userId: String) {
-        db.collection("user")
-            .document(userId) // Die userId des Benutzers
-            .delete()
-            .addOnSuccessListener {
-                Log.d("Firestore", "Benutzer erfolgreich gelöscht")
-            }
-            .addOnFailureListener { e ->
-                Log.w("Firestore", "Fehler beim Löschen des Benutzers", e)
-            }
-    }
-
     fun addFriend(userId: String) {
-        val currentUser = authManager.getCurrentUserId()
         db.collection("user")
-            .document(currentUser)
+            .document(authManager.getCurrentUserId())
             .update("friends", FieldValue.arrayUnion(userId))
     }
 
     fun getFriends(callback: (ArrayList<UserDO>) -> Unit) {
-        getUser(authManager.getCurrentUserId()) { currentUser ->
-            if (currentUser != null && !currentUser.friends.isNullOrEmpty()) {
+        val currentUser = authManager.getCurrentUserId()
+        getUser(currentUser) { user ->
+            if (user != null && !user.friends.isNullOrEmpty()) {
                 val list = arrayListOf<UserDO>()
-                val friends = currentUser.friends
+                val friends = user.friends
                 var loadedCount = 0
 
                 // Iteriere über die Freundesliste und hole die Daten der einzelnen Freunde
@@ -108,8 +112,7 @@ object DatabaseManager {
     }
 
     fun createGroup(name: String, description: String, groupId: String) {
-        val userId = authManager.getCurrentUserId()
-        val group = GroupDO(groupId, name, description, arrayListOf(userId))
+        val group = GroupDO(groupId, name, description, arrayListOf(authManager.getCurrentUserId()))
 
         db.collection("groups")
             .document(groupId)
@@ -123,9 +126,8 @@ object DatabaseManager {
     }
 
     fun getGroups(callback: (ArrayList<GroupDO>) -> Unit) {
-        val userId = authManager.getCurrentUserId()
         db.collection("groups")
-            .whereArrayContains("members", userId)
+            .whereArrayContains("members", authManager.getCurrentUserId())
             .get()
             .addOnSuccessListener { documents ->
                 val list = arrayListOf<GroupDO>()

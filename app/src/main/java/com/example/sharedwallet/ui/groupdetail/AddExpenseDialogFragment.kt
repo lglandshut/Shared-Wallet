@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
 import com.example.sharedwallet.firebase.objects.ExpenseDO
+import com.example.sharedwallet.firebase.objects.UserDebt
 
 class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragment() {
 
