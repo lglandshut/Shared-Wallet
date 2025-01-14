@@ -213,6 +213,7 @@ object DatabaseManager {
             expense.apply {
                 this.expenseId = UUID.randomUUID().toString()
                 this.paidBy = authManager.getCurrentUserId()
+                this.date = com.google.firebase.Timestamp.now()
             }
         }
 

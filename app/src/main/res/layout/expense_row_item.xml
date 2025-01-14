@@ -1,23 +1,23 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/group_item_background"
     android:orientation="vertical"
     android:padding="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/expense_row_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/baseline_add_card_24"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/expense_icon"
-            android:layout_marginEnd="8dp"/>
+            android:src="@drawable/baseline_add_card_24" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -31,35 +31,35 @@
                 android:layout_height="wrap_content"
                 android:text="@string/person_a"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/paidFor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/person_b"
-                android:textSize="14sp"
-                android:textColor="@color/gray"/>
+                android:textColor="@color/gray"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="@string/default_debt_amount"
-            android:textSize="16sp"
-            android:textStyle="bold"
             android:textColor="@color/design_default_color_secondary_variant"
-            android:layout_marginStart="8dp"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Grund für die Ausgabe -->
     <TextView
-        android:id="@+id/reason"
-        android:layout_width="match_parent"
+        android:id="@+id/expense_timestamp_and_reason"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reason"
-        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:text="@string/timestamp"
         android:textColor="@color/black"
-        android:layout_marginTop="4dp"/>
+        android:textSize="14sp" />
 </LinearLayout>

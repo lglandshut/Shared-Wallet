@@ -1,5 +1,7 @@
 package com.example.sharedwallet.firebase.objects
 
+import com.google.firebase.Timestamp
+
 data class GroupDO(
     val groupId: String? = null,
     val name: String? = null,
@@ -13,5 +15,6 @@ data class ExpenseDO(
     var paidBy: String? = null,
     var paidFor: String? = null,
     val debtAmount: Double? = null,
-    val debtReason: String? = null
+    val debtReason: String? = null,
+    var date: Timestamp? = null
 )

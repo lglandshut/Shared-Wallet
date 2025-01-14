@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sharedwallet.R
 import com.example.sharedwallet.firebase.objects.ExpenseDO
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ActivityFragmentAdapter(private var expenseList: List<ExpenseDO>, private var currentUser: String) :
     RecyclerView.Adapter<ActivityFragmentAdapter.ViewHolder>() {
@@ -18,7 +20,7 @@ class ActivityFragmentAdapter(private var expenseList: List<ExpenseDO>, private 
         val paidBy: TextView = itemView.findViewById(R.id.paidBy)
         val paidFor: TextView = itemView.findViewById(R.id.paidFor)
         val amount: TextView = itemView.findViewById(R.id.amount)
-        val reason: TextView = itemView.findViewById(R.id.reason)
+        val timestamp: TextView = itemView.findViewById(R.id.expense_timestamp_and_reason)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +34,10 @@ class ActivityFragmentAdapter(private var expenseList: List<ExpenseDO>, private 
         holder.paidBy.text = expense.paidBy
         holder.paidFor.text = expense.paidFor
         holder.amount.text = "${String.format("%.2f", expense.debtAmount)} €"
-        holder.reason.text = expense.debtReason
+        holder.timestamp.text = expense.date?.toDate()?.let { date ->
+            val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+            "${dateFormat.format(date)} - ${expense.debtReason}"
+        } ?: ""
         if (expense.paidBy != userIdToUserNameMap[currentUser]) holder.amount.setTextColor(Color.RED)
     }
 
