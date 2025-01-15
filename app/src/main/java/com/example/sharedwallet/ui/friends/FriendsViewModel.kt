@@ -21,7 +21,7 @@ class FriendsViewModel : ViewModel() {
 
     fun searchUser(username: String, callback: (Boolean) -> Unit) {
         if (username.contains("@")) {
-            // E-Mail-Adresse
+            // E-Mail-Address
             databaseManager.getUserByEmail(username) { result ->
                 if (result != null) {
                     addFriend(result)
@@ -29,7 +29,7 @@ class FriendsViewModel : ViewModel() {
                 } else callback(false)
             }
         } else {
-            // Benutzername
+            // Username
             databaseManager.getUserByUsername(username) { result ->
                 if (result != null) {
                     addFriend(result)

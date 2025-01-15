@@ -92,20 +92,20 @@ object DatabaseManager {
                 val friends = user.friends
                 var loadedCount = 0
 
-                // Iteriere über die Freundesliste und hole die Daten der einzelnen Freunde
+                // Iterate over friends and load each friend
                 friends.forEach { friendId ->
                     getUser(friendId) { friend ->
                         friend?.let { list.add(it) }
                         loadedCount++
 
-                        // Prüfe, ob alle Freunde geladen sind, bevor der Callback aufgerufen wird
+                        // Check if all friends have been loaded
                         if (loadedCount == friends.size) {
                             callback(list)
                         }
                     }
                 }
             } else {
-                // Falls keine Freunde vorhanden sind, rufe den Callback mit einer leeren Liste auf
+                // If no friends are found, return an empty list
                 callback(arrayListOf())
             }
         }

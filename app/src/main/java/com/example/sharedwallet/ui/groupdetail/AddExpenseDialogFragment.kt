@@ -40,7 +40,7 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
         expenseAmount.visibility = View.GONE
         recyclerView.visibility = View.GONE
 
-        // RecyclerView konfigurieren
+        // Setup RecyclerView
         recyclerViewAdapter = UserDeptSplitAdapter(userList.map { UserDebt(it) }.toMutableList(), viewModel.userIdToUserNameMap)
         recyclerView.adapter = recyclerViewAdapter
 
@@ -53,7 +53,7 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
         addButton.setOnClickListener {
             when (distributionTypeRadioGroup.checkedRadioButtonId) {
                 R.id.distribution_equal -> {
-                    // Gleichteilte Verteilung der Schulden
+                    // Equal Distribution
                     val expenseAmountPerUser = expenseAmount.text.toString().toDouble()/ (userList.size + 1)
                     val expenseList = mutableListOf<ExpenseDO>()
                     userList.forEach {
@@ -65,8 +65,8 @@ class AddExpenseDialogFragment(private var userList: List<String>) : DialogFragm
                 }
 
                 R.id.distribution_custom -> {
-                    // Individuelle Verteilung der Schulden
-                    // Liste aus Adapter abrufen und Leere Beträge filtern
+                    // Individual Distribution
+                    // Get list from adapter and filter out users with 0 debt
                     val userDebtList = recyclerViewAdapter.getUserDebtList().filterNot {
                         it.userDebt == 0.0 || it.userDebt == null }
                     val expenseList = userDebtList.map { userDebt ->

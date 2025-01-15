@@ -48,7 +48,7 @@ class GroupDetailExpenseAdapter(private var expenseList: List<ExpenseDO>, privat
 
     override fun getItemCount() = expenseList.size
 
-    // Aktualisiere Daten und informiere RecyclerView
+    // Update data and notify adapter
     fun updateData(newList: List<ExpenseDO>, userIdToUserNameMap: Map<String, String>) {
         this.userIdToUserNameMap = userIdToUserNameMap
         newList.forEach { expense ->

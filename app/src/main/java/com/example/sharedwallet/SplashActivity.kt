@@ -15,12 +15,12 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (authManager.isUserLoggedIn()) {
-            // Benutzer ist eingeloggt, zeige MainActivity
+            // User is logged in, show MainActivity
             startActivity(Intent(this, MainActivity::class.java))
         } else {
-            // Benutzer ist nicht eingeloggt, zeige LoginActivity
+            // User is not logged in, show LoginActivity
             startActivity(Intent(this, LoginActivity::class.java))
         }
-        finish() // Schließt SplashActivity
+        finish() // Close SplashActivity
     }
 }

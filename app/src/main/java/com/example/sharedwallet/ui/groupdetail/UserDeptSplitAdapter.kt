@@ -13,7 +13,7 @@ import com.example.sharedwallet.R
 import com.example.sharedwallet.firebase.objects.UserDebt
 
 class UserDeptSplitAdapter(
-    private var userDebtList: MutableList<UserDebt>, // Mutable, um Änderungen zu speichern
+    private var userDebtList: MutableList<UserDebt>,
     private val userIdToUserNameMap: Map<String, String>
 ) : RecyclerView.Adapter<UserDeptSplitAdapter.ViewHolder>() {
 
@@ -33,7 +33,7 @@ class UserDeptSplitAdapter(
         holder.userName.text = userIdToUserNameMap[userDebt.userName] ?: userDebt.userName
         holder.userDebt.setText(userDebt.userDebt?.toString() ?: "")
 
-        // Überwache Änderungen im EditText
+        // Observe changes in the EditText
         holder.userDebt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 userDebtList[position] = userDebt.copy(
@@ -48,7 +48,7 @@ class UserDeptSplitAdapter(
 
     override fun getItemCount() = userDebtList.size
 
-    // Zugriff auf die aktuelle Liste
+    // Get the current userDebtList
     fun getUserDebtList(): List<UserDebt> = userDebtList
 }
 

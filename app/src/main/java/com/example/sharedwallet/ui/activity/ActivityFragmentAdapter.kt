@@ -43,7 +43,7 @@ class ActivityFragmentAdapter(private var expenseList: List<ExpenseDO>, private 
 
     override fun getItemCount() = expenseList.size
 
-    // Aktualisiere Daten und informiere RecyclerView
+    // Update the data in the adapter
     fun updateData(newList: List<ExpenseDO>, userIdToUserNameMap: Map<String, String>) {
         this.userIdToUserNameMap = userIdToUserNameMap
         newList.forEach { expense ->

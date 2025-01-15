@@ -25,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
         val usernameInputLayout = findViewById<TextInputLayout>(R.id.usernameInputLayout)
         val authButton = findViewById<Button>(R.id.authButton)
 
-        // Listener für RadioGroup
+        // Listener for RadioGroup
         val authOptionGroup = findViewById<RadioGroup>(R.id.authOptionGroup)
         authOptionGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
                     checkedBox = 2
                 }
             }
-            authButton.isEnabled = true // Button aktivieren, wenn eine Option ausgewählt ist
+            authButton.isEnabled = true // Activate Button if RadioGroup is checked
         }
 
         authButton.setOnClickListener {
@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish() // Schließt LoginActivity
+        finish() // Close LoginActivity
     }
 
 }

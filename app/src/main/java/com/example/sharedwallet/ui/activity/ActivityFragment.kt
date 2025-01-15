@@ -28,7 +28,7 @@ class ActivityFragment : Fragment() {
         _binding = FragmentActivityBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // RecyclerView konfigurieren
+        // configure RecyclerView
         activityFragmentAdapter = ActivityFragmentAdapter(emptyList(), currentUser)
         binding.recyclerViewActivities.adapter = activityFragmentAdapter
 

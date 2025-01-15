@@ -46,12 +46,12 @@ class MainActivity : AppCompatActivity() {
     private var previousGroupList: List<GroupDO> = emptyList()
     private var isFirstRun = true
 
-    // Handler und Runnable für den periodischen Task
+    // Handler and Runnable for checking for new groups
     private val handler = Handler(Looper.getMainLooper())
     private val taskRunnable = object : Runnable {
         override fun run() {
             checkForNewGroups()
-            handler.postDelayed(this, 15000) // Wiederhole alle 15 Sekunden
+            handler.postDelayed(this, 30000) // Repeat every 30s
         }
     }
 
@@ -155,26 +155,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkForNewGroups() {
-        // Gruppen aus der Datenbank laden
+        // Get Groups for UserId from Database
         databaseManager.getGroups { newGroupList ->
             if (!isFirstRun) {
-                // Finde neue Gruppen
+                // Find new Groups
                 val addedGroups = newGroupList.filter { newGroup ->
                     previousGroupList.none { it.groupId == newGroup.groupId } &&
                             newGroup.members?.isNotEmpty() == true &&
                             newGroup.members.first() != authManager.getCurrentUserId()
                 }
 
-                // Zeige Notifications für neue Gruppen
+                // Show Notification for new Groups
                 addedGroups.forEach { group ->
                     showNotification("You have been added to the group: ${group.name}")
                 }
             } else {
-                // Setze das Flag auf false nach der ersten Abfrage
+                // Set flag after first run
                 isFirstRun = false
             }
 
-            // Aktualisiere die vorherige Gruppenliste
+            // Update previousGroupList
             previousGroupList = newGroupList
         }
     }

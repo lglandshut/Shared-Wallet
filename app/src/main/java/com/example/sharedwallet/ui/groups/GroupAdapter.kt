@@ -29,7 +29,7 @@ class GroupAdapter(private val groups: List<GroupDO>) : RecyclerView.Adapter<Gro
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, GroupDetailActivity::class.java).apply {
-                // Übergib die Gruppendetails an die neue Activity
+                // Pass the group ID to the GroupDetailActivity
                 putExtra("GROUP_ID", group.groupId)
             }
             context.startActivity(intent)

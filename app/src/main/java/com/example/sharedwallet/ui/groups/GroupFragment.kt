@@ -18,9 +18,6 @@ class GroupFragment : Fragment() {
 
     private var _binding: FragmentGroupBinding? = null
     private lateinit var adapter: GroupAdapter
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -39,7 +36,7 @@ class GroupFragment : Fragment() {
             showAddGroupDialog(groupViewModel)
         }
 
-        // Beobachtet die Gruppenliste und aktualisiert die UI
+        // Observe the LiveData from the ViewModel and update recyclerView
         groupViewModel.groups.observe(viewLifecycleOwner) { newGroupList ->
             adapter = GroupAdapter(newGroupList)
             binding.recyclerViewGroups.adapter = adapter
@@ -52,31 +49,30 @@ class GroupFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.recyclerViewGroups.layoutManager = LinearLayoutManager(context)
-        adapter = GroupAdapter(emptyList()) // Start mit leerer Liste
+        adapter = GroupAdapter(emptyList()) // Start with an empty list
         binding.recyclerViewGroups.adapter = adapter
     }
 
     private fun showAddGroupDialog(groupViewModel: GroupViewModel) {
-        // Layout für das Dialogfenster aufbauen
+        // Build Layout for dialogue
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_group, null)
 
-        // EditText für Gruppennamen und Beschreibung
+        // EditText for the group name and description
         val groupNameEditText = dialogView.findViewById<EditText>(R.id.editGroupName)
         val groupDescriptionEditText = dialogView.findViewById<EditText>(R.id.editGroupDescription)
 
-        // Dialog erstellen
+        // Create dialogue
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Add New Group")
             .setView(dialogView)
             .setPositiveButton("Save") { dialogInterface, _ ->
-                // Wenn "Save" geklickt wird, die Eingaben validieren und speichern
+                // When the user clicks the save button, validate and save the group
                 val groupName = groupNameEditText.text.toString()
                 val groupDescription = groupDescriptionEditText.text.toString()
 
                 if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
-                    // Hier kannst du die Gruppe speichern, z.B. in Firestore
                     val newGroup = GroupDO(name = groupName, description = groupDescription)
-                    groupViewModel.addGroup(newGroup) // Methode im ViewModel, um die Gruppe hinzuzufügen
+                    groupViewModel.addGroup(newGroup)
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -91,7 +87,7 @@ class GroupFragment : Fragment() {
                 dialogInterface.dismiss()
             }
 
-        // Den Dialog anzeigen
+        // Show dialogue
         dialog.show()
     }
 

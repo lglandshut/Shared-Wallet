@@ -38,7 +38,7 @@ class FriendsFragment : Fragment() {
             showAddFriendDialog(friendsViewModel)
         }
 
-        // Beobachtet die Gruppenliste und aktualisiert die UI
+        // Observe the friends list in the ViewModel and update the RecyclerView
         friendsViewModel.friends.observe(viewLifecycleOwner) { friendsList ->
             adapter = FriendsAdapter(friendsList)
             binding.recyclerViewFriends.adapter = adapter
@@ -56,22 +56,20 @@ class FriendsFragment : Fragment() {
     }
 
     private fun showAddFriendDialog(friendsViewModel: FriendsViewModel) {
-        // Layout für das Dialogfenster aufbauen
+        // Build layout for dialog
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_friend, null)
-
-        // EditText für Gruppennamen und Beschreibung
+        // EditText for username or email
         val userNameEditText = dialogView.findViewById<EditText>(R.id.editUsernameOrEmail)
-
         // Dialog erstellen
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Add New Friend")
             .setView(dialogView)
             .setPositiveButton("Add") { dialogInterface, _ ->
-                // Wenn "Add" geklickt wird, nach User suchen und hinzufügen
+                // When the user clicks the "Add" button, get the username or email from the EditText
                 val friendUsernameOrEmail = userNameEditText.text.toString()
 
                 if (friendUsernameOrEmail.isNotEmpty()) {
-                    // Hier kannst du die Gruppe speichern, z.B. in Firestore
+                    // Search user in database
                     friendsViewModel.searchUser(friendUsernameOrEmail) { result ->
                         if (!result) {
                             Toast.makeText(
@@ -95,7 +93,7 @@ class FriendsFragment : Fragment() {
                 dialogInterface.dismiss()
             }
 
-        // Den Dialog anzeigen
+        // Show dialogue
         dialog.show()
     }
 
