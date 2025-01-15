@@ -12,24 +12,24 @@ The application uses **Firebase** for its backend. Firebase Authentication allow
 
 #### 3. Main Screens
 There are three main screens within the app:
-![Screenshot_20250115_135634](https://github.com/user-attachments/assets/2b2a1e07-efd3-4724-aea9-147d095d9fd2)
+![Screenshot_20250115_135634](https://github.com/user-attachments/assets/65830f75-f193-4815-903f-7c1bf73fdd69)
 
 **Groups:** The core feature of the app, where users can create, view, and manage debt-sharing groups. Users can add friends to groups and create expenses. The total debt is calculated automatically based on group participation.
-![Screenshot_20250115_140200](https://github.com/user-attachments/assets/dd05b8a5-7e42-4123-b3fc-5c71a4de58f7)
+![Screenshot_20250115_140200](https://github.com/user-attachments/assets/34537b29-ffa0-42ef-87e1-7a0e06a6f9dc)
 
 **Activity:** A log of all expenses across all groups the user is part of, making it easy to see what has been spent lately.
-![Screenshot_20250115_140927](https://github.com/user-attachments/assets/92ca8190-4745-4ffe-a12b-03dee587e4fe)
+![Screenshot_20250115_140927](https://github.com/user-attachments/assets/3a5a25bf-61b0-41a6-9a8f-4f5314ed87d9)
 
 **Friends:** Users can search for and add friends using either their username or email. This screen is essential for managing the people you are sharing expenses with.
-![Screenshot_20250115_140022](https://github.com/user-attachments/assets/2aee845c-39e1-4446-9da9-0da12b4d0b7a)
+![Screenshot_20250115_140022](https://github.com/user-attachments/assets/e4621671-bc60-4701-8890-a068f6e355d2)
 
 #### 4. Push Notifications
 Push notifications are implemented to keep users informed. Every 30 seconds, the app checks if a user has been added to a new group. If so, a push notification is sent with the group name, ensuring users are always aware of new group memberships.
-![Screenshot_20250115_140635](https://github.com/user-attachments/assets/ac9ab31d-bb60-4327-94af-2894b62b3711)
+![Screenshot_20250115_140635](https://github.com/user-attachments/assets/0dcfe58d-aab1-4063-a327-4ea5116a2806)
 
 #### 5. Debt Management
 The main functionality of the app is to split debts within a group. After creating a group and inviting friends, users can:
-![Screenshot_20250115_140504](https://github.com/user-attachments/assets/15965b18-6750-4e0e-9853-0d0b8d0e7775)
+![Screenshot_20250115_140504](https://github.com/user-attachments/assets/d1b743c9-fc77-49b2-96d1-a34fc55a2bbf)
 
 **Add friends:** Once friends are added via the "Friends" screen, they can be added to any group.
 **Create expenses:** Expenses can be added with details like description, location, and amount. The amount can be split equally among all members of the group or individually. Each expense is listed with the amount, and the total debt for each member is updated accordingly.
