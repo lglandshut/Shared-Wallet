@@ -38,9 +38,13 @@ The main functionality of the app is to split debts within a group. After creati
 ![Screenshot_20250115_140504](https://github.com/user-attachments/assets/d1b743c9-fc77-49b2-96d1-a34fc55a2bbf)
 
 **Add friends:** Once friends are added via the "Friends" screen, they can be added to any group.
+
 **Create expenses:** Expenses can be added with details like description, location, and amount. The amount can be split equally among all members of the group or individually. Each expense is listed with the amount, and the total debt for each member is updated accordingly.
+
 **Settle debts:** The app allows users to pay off all outstanding debts at once, simplifying the process of clearing balances.
+
 **Calculate total debt:** Each user can see how much they owe or are owed within the group, providing a clear overview of the financial situation.
+
 **Leave a group:** A user can leave a group, but only after all debts have been settled, ensuring no outstanding balances remain.
 
 #### 6. User Interface and Experience
