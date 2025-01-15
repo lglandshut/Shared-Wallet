@@ -87,14 +87,14 @@
                 android:id="@+id/button_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Abbrechen"
+                android:text="Cancel"
                 android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/button_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hinzufügen" />
+                android:text="Add Expense" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
