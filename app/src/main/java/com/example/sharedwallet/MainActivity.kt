@@ -1,7 +1,13 @@
 package com.example.sharedwallet
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -9,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -20,6 +27,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.sharedwallet.databinding.ActivityMainBinding
 import com.example.sharedwallet.firebase.AuthManager
 import com.example.sharedwallet.firebase.DatabaseManager
+import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.ui.groups.GroupFragment
 import com.example.sharedwallet.ui.groups.GroupViewModel
 import com.google.android.material.navigation.NavigationView
@@ -35,6 +43,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var headerView: View
     private val databaseManager = DatabaseManager
     private val authManager = AuthManager
+    private var previousGroupList: List<GroupDO> = emptyList()
+    private var isFirstRun = true
+
+    // Handler und Runnable für den periodischen Task
+    private val handler = Handler(Looper.getMainLooper())
+    private val taskRunnable = object : Runnable {
+        override fun run() {
+            checkForNewGroups()
+            handler.postDelayed(this, 15000) // Wiederhole alle 15 Sekunden
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +61,16 @@ class MainActivity : AppCompatActivity() {
         initViews()
         initListeners()
         loadData()
+        handler.post(taskRunnable)
     }
 
     public override fun onStart() {
         super.onStart()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(taskRunnable)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -75,8 +100,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "No GroupFragment active to refresh", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -131,4 +154,50 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkForNewGroups() {
+        // Gruppen aus der Datenbank laden
+        databaseManager.getGroups { newGroupList ->
+            if (!isFirstRun) {
+                // Finde neue Gruppen
+                val addedGroups = newGroupList.filter { newGroup ->
+                    previousGroupList.none { it.groupId == newGroup.groupId } &&
+                            newGroup.members?.isNotEmpty() == true &&
+                            newGroup.members.first() != authManager.getCurrentUserId()
+                }
+
+                // Zeige Notifications für neue Gruppen
+                addedGroups.forEach { group ->
+                    showNotification("You have been added to the group: ${group.name}")
+                }
+            } else {
+                // Setze das Flag auf false nach der ersten Abfrage
+                isFirstRun = false
+            }
+
+            // Aktualisiere die vorherige Gruppenliste
+            previousGroupList = newGroupList
+        }
+    }
+
+    private fun showNotification(message: String) {
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "default_channel",
+                "Group Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(applicationContext, "default_channel")
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle("New Group Added!")
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+    }
 }

@@ -66,4 +66,5 @@
     <string name="person_a">Person A</string>
     <string name="person_b">Person B</string>
     <string name="reason">Reason</string>
+    <string name="timestamp">Timestamp</string>
 </resources>

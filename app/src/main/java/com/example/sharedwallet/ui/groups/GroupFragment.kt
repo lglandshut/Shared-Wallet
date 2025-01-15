@@ -40,8 +40,8 @@ class GroupFragment : Fragment() {
         }
 
         // Beobachtet die Gruppenliste und aktualisiert die UI
-        groupViewModel.groups.observe(viewLifecycleOwner) { groupList ->
-            adapter = GroupAdapter(groupList)
+        groupViewModel.groups.observe(viewLifecycleOwner) { newGroupList ->
+            adapter = GroupAdapter(newGroupList)
             binding.recyclerViewGroups.adapter = adapter
         }
 

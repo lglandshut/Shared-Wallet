@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.0"
+coreKtxVersion = "1.15.0"
 firebaseBom = "33.5.1"
 firebaseUiAuth = "7.2.0"
 kotlin = "1.9.24"
@@ -16,9 +17,12 @@ materialVersion = "1.9.0"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
 firebaseFirestoreKtx = "25.1.1"
+workRuntimeKtx = "2.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-ktx-v1150 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseUiAuth" }

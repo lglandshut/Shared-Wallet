@@ -64,7 +64,6 @@ class LoginActivity : AppCompatActivity() {
                 authManager.createUserWithEmail(email, password, username, this) { success ->
                     if (success) startMainActivity()
                 }
-
             }
         }
     }
