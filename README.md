@@ -54,7 +54,7 @@ The app's design focuses on simplicity and ease of use. The interface is intuiti
 
 ### Activity / Fragment Architecture
 
-![SharedWallet.drawio.png](../../Downloads/SharedWallet.drawio.png)
+![SharedWallet drawio](https://github.com/user-attachments/assets/e70bc46f-650b-46b5-8fd7-193b488deb8b)
 
 ### Conclusion
 
