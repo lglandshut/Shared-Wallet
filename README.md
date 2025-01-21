@@ -28,7 +28,7 @@ There are three main screens within the app:
 ![Screenshot_20250115_140022](https://github.com/user-attachments/assets/e4621671-bc60-4701-8890-a068f6e355d2)
 
 #### 4. Push Notifications
-Push notifications are implemented to keep users informed. Every 30 seconds, the app checks if a user has been added to a new group or has been assigned a new debt. If so, a push notification is sent with the group name, ensuring users are always aware of new group memberships and new debts to confirm.
+Push notifications are implemented to keep users informed. Every 30 seconds, the app checks if a user has been added to a new group or has been assigned to a new expense. If so, a push notification is sent with the group name, ensuring users are always aware of new group memberships and debts to confirm.
 
 ![Screenshot_20250115_140635](https://github.com/user-attachments/assets/0dcfe58d-aab1-4063-a327-4ea5116a2806)
 
@@ -41,7 +41,7 @@ The main functionality of the app is to split debts within a group. After creati
 
 **Create expenses:** Expenses can be added with details like description, location, and amount. The amount can be split equally among all members of the group or individually. Each expense is listed with the amount, and the total debt for each member is updated accordingly.
 
-**Confirm Expenses:** After a new expense has been created, it has to be confirmed by the affected user. Only after confirmation the expense will be considered for debt calculation.
+**Confirm expenses:** After a new expense has been created, it has to be confirmed by the affected user. Only after confirmation the expense will be considered for debt calculation. Non confirmed expenses will be shown red in the group.
 
 **Settle debts:** The app allows users to pay off all outstanding debts at once, simplifying the process of clearing balances.
 
