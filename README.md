@@ -52,6 +52,10 @@ The main functionality of the app is to split debts within a group. After creati
 #### 6. User Interface and Experience
 The app's design focuses on simplicity and ease of use. The interface is intuitive, ensuring that users can quickly create groups, add expenses, and calculate debts. Push notifications provide real-time updates, keeping users in the loop.
 
+### Activity / Fragment Architecture
+
+![SharedWallet.drawio.png](../../Downloads/SharedWallet.drawio.png)
+
 ### Conclusion
 
 SharedWallet makes managing shared expenses straightforward. Whether it's a group trip, a roommate situation, or any scenario where multiple people share costs, SharedWallet ensures that debts are divided fairly, transparently, and efficiently. With Firebase-powered backend and push notifications, the app ensures a seamless experience across all users.
