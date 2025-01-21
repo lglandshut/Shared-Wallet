@@ -27,6 +27,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.sharedwallet.databinding.ActivityMainBinding
 import com.example.sharedwallet.firebase.AuthManager
 import com.example.sharedwallet.firebase.DatabaseManager
+import com.example.sharedwallet.firebase.objects.ExpenseDO
 import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.ui.groups.GroupFragment
 import com.example.sharedwallet.ui.groups.GroupViewModel
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private val databaseManager = DatabaseManager
     private val authManager = AuthManager
     private var previousGroupList: List<GroupDO> = emptyList()
+    private var previousDebtList: List<ExpenseDO> = emptyList()
     private var isFirstRun = true
 
     // Handler and Runnable for checking for new groups
@@ -167,7 +169,20 @@ class MainActivity : AppCompatActivity() {
 
                 // Show Notification for new Groups
                 addedGroups.forEach { group ->
-                    showNotification("You have been added to the group: ${group.name}")
+                    showNotification( "New Group!", "You have been added to the group: ${group.name}")
+                }
+
+                //Find new expenses
+                val addedExpenses = newGroupList.flatMap { it.expenses ?: emptyList() }
+                    .filter { newExpense ->
+                        previousDebtList.none { it.expenseId == newExpense.expenseId } &&
+                                newExpense.paidFor == authManager.getCurrentUserId() &&
+                                newExpense.isConfirmed == false
+                    }
+
+                // Show Notification for new Groups
+                addedExpenses.forEach { expense ->
+                    showNotification("New Expense!","You have been assigned an open debt: ${expense.debtReason}")
                 }
             } else {
                 // Set flag after first run
@@ -176,10 +191,11 @@ class MainActivity : AppCompatActivity() {
 
             // Update previousGroupList
             previousGroupList = newGroupList
+            previousDebtList = newGroupList.flatMap { it.expenses ?: emptyList() }
         }
     }
 
-    private fun showNotification(message: String) {
+    private fun showNotification(title: String, message: String) {
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -193,7 +209,7 @@ class MainActivity : AppCompatActivity() {
 
         val notification = NotificationCompat.Builder(applicationContext, "default_channel")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("New Group Added!")
+            .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
