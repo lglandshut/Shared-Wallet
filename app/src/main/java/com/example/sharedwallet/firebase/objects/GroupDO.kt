@@ -16,5 +16,6 @@ data class ExpenseDO(
     var paidFor: String? = null,
     val debtAmount: Double? = null,
     val debtReason: String? = null,
-    var date: Timestamp? = null
+    var date: Timestamp? = null,
+    var isConfirmed: Boolean? = false
 )

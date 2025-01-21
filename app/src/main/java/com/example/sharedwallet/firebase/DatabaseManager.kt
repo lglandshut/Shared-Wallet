@@ -183,7 +183,7 @@ object DatabaseManager {
                     callback(documents.first().toObject<UserDO>())
                 }
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 callback(null)
             }
     }
@@ -214,6 +214,7 @@ object DatabaseManager {
                 this.expenseId = UUID.randomUUID().toString()
                 this.paidBy = authManager.getCurrentUserId()
                 this.date = com.google.firebase.Timestamp.now()
+                this.isConfirmed = false
             }
         }
 
@@ -224,6 +225,52 @@ object DatabaseManager {
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding expenses to existing list using arrayUnion", e)
+            }
+    }
+
+    fun confirmExpense(expense: ExpenseDO, groupId: String, callback: () -> Unit) {
+        val groupDocRef = db.collection("groups").document(groupId)
+
+        groupDocRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val group = document.toObject(GroupDO::class.java)
+
+                    // Suche nach der zu aktualisierenden Expense
+                    val updatedExpenses = group?.expenses?.map { existingExpense ->
+                        if (existingExpense.expenseId == expense.expenseId) {
+                            existingExpense.copy(isConfirmed = true) // Setze isConfirmed auf true
+                        } else {
+                            existingExpense
+                        }
+                    }
+
+                    // Aktualisierte Liste zurück in Firestore speichern
+                    groupDocRef.update("expenses", updatedExpenses).addOnSuccessListener {
+                        callback()
+                    }
+                }
+            }
+    }
+
+    fun removeExpense(expense: ExpenseDO, groupId: String, onComplete: () -> Unit) {
+        val groupDocRef = db.collection("groups").document(groupId)
+
+        groupDocRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val group = document.toObject(GroupDO::class.java)
+
+                    // Suche nach der zu aktualisierenden Expense
+                    val updatedExpenses = group?.expenses?.filterNot { existingExpense ->
+                        existingExpense.expenseId == expense.expenseId
+                    }
+
+                    // Aktualisierte Liste zurück in Firestore speichern
+                    groupDocRef.update("expenses", updatedExpenses).addOnSuccessListener {
+                        onComplete()
+                    }
+                }
             }
     }
 

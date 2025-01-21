@@ -32,20 +32,20 @@ class GroupDetailActivity : AppCompatActivity() {
         binding = ActivityGroupDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // set Toolbar
+        //set Toolbar
         setSupportActionBar(binding.toolbar)
 
-        //Get groupid from intent
+        //Get groupId from intent
         val groupId = intent.getStringExtra("GROUP_ID") ?: "Group Detail"
         supportActionBar?.title = groupId
 
-        // configure RecyclerView
-        groupExpensesAdapter = GroupDetailExpenseAdapter(emptyList(), currentUser)
+        //configure RecyclerView
+        groupExpensesAdapter = GroupDetailExpenseAdapter(emptyList(), currentUser, this, viewModel)
         binding.recyclerViewExpenses.adapter = groupExpensesAdapter
         groupDetailUserAdapter = GroupDetailUserAdapter(emptyList())
         binding.recyclerViewExpensesPerUser.adapter = groupDetailUserAdapter
 
-        // load data
+        //load data
         viewModel.loadGroup(groupId)
         viewModel.group.observe(this) { group ->
             supportActionBar?.title = group.name

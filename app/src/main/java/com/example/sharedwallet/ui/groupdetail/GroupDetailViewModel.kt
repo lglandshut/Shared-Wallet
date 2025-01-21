@@ -10,6 +10,7 @@ import com.example.sharedwallet.firebase.objects.GroupDO
 import com.example.sharedwallet.firebase.objects.UserDO
 import com.example.sharedwallet.firebase.objects.UserDebt
 
+
 class GroupDetailViewModel : ViewModel() {
 
     private val databaseManager = DatabaseManager
@@ -31,6 +32,7 @@ class GroupDetailViewModel : ViewModel() {
     var userIdToUserNameMap: Map<String, String> = emptyMap()
 
     fun loadGroup(groupId: String) {
+        if (groupId.isEmpty()) return
         databaseManager.getGroupById(groupId) { result ->
             _group.value = result
             //Map userIds to usernames
@@ -42,6 +44,9 @@ class GroupDetailViewModel : ViewModel() {
                         _expenses.value = result.expenses.map { it.copy() }
                         //Calculate debts per user
                         calculateDebtsPerUser()
+                    } else {
+                        _expenses.value = emptyList()
+                        _userDebts.value = emptyList()
                     }
                 }
             }
@@ -50,9 +55,12 @@ class GroupDetailViewModel : ViewModel() {
 
     private fun calculateDebtsPerUser() {
         _group.value?.expenses?.let { expenses ->
-            val debtsMap = mutableMapOf<String, Double>() // Map für UserID -> Gesamtschuld
+            val debtsMap = mutableMapOf<String, Double>() // Map for UserID -> total debts
 
             for (expense in expenses) {
+                //If expense is not confirmed, skip
+                if (expense.isConfirmed == false) continue
+
                 //If currentUser paid
                 if (expense.paidBy == currentUser) {
                     val amount = expense.debtAmount ?: 0.0
@@ -76,7 +84,6 @@ class GroupDetailViewModel : ViewModel() {
             _userDebts.value = userDebts
         }
     }
-
 
     fun loadFriendsList() {
         databaseManager.getFriends { friends ->
@@ -124,4 +131,20 @@ class GroupDetailViewModel : ViewModel() {
         }
     }
 
+    fun confirmExpense(expense: ExpenseDO) {
+        expense.isConfirmed = true
+        group.value?.groupId?.let {
+            DatabaseManager.confirmExpense(expense, it) {
+                loadGroup(it)
+            }
+        }
+    }
+
+    fun removeExpense(expense: ExpenseDO) {
+        group.value?.groupId?.let {
+            DatabaseManager.removeExpense(expense, it) {
+                loadGroup(it)
+            }
+        }
+    }
 }

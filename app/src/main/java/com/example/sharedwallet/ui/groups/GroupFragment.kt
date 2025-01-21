@@ -47,6 +47,13 @@ class GroupFragment : Fragment() {
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reload groups when the fragment is resumed
+        val groupViewModel = ViewModelProvider(this)[GroupViewModel::class.java]
+        groupViewModel.loadGroups()
+    }
+
     private fun setupRecyclerView() {
         binding.recyclerViewGroups.layoutManager = LinearLayoutManager(context)
         adapter = GroupAdapter(emptyList()) // Start with an empty list
