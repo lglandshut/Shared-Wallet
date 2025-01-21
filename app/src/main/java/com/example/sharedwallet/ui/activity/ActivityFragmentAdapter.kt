@@ -50,7 +50,7 @@ class ActivityFragmentAdapter(private var expenseList: List<ExpenseDO>, private 
             expense.paidBy = userIdToUserNameMap[expense.paidBy] ?: expense.paidBy
             expense.paidFor = userIdToUserNameMap[expense.paidFor] ?: expense.paidFor
         }
-        expenseList = newList
+        expenseList = newList.sortedByDescending { it.date }
         notifyDataSetChanged()
     }
 }
